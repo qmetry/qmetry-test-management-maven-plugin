@@ -1,2 +1,3 @@
+HelpMojo.class
 com\plugins\Upload.class
-com\plugins\MyMojo.class
+com\plugins\UploadMojo.class
