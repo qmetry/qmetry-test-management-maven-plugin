@@ -54,12 +54,6 @@ public class UploadMojo
 	String apikey;
 	
 	/**
-	 * Testsuite name
-	 */
-	@Parameter( property = "testsuiteName", required = true)
-	String testsuiteName;
-	
-	/**
 	 * Absolute Path of testresult file.
 	 */
 	@Parameter( property = "testResultFilePath", required = true)
@@ -67,28 +61,33 @@ public class UploadMojo
 	
 	/**
 	 *Format of test result file.
-	 * Valid Format JUNIT\CUCUMBER\TESTNG\QAS
+	 * Valid Format junit/xml , cucumber/json , testng/xml , qas/json
 	 */
 	@Parameter( property = "format", required = true)
 	String format;
-	
-	/**
-	 *Platform Name
-	 */
-	@Parameter( property="platformName", required=true)
-	String platformName;
-	
-	/**
-	 *Cycle Name
-	 */
-	@Parameter(property="cycleName" , required=true)
-	String cycleName;
 	
     public void execute()
         throws MojoExecutionException
     {
 		try
 		{
+			String fileformat="";
+			
+			if(format.equals("cucumber/json")){
+				fileformat="CUCUMBER";
+			}
+								 
+			if(format.equals("junit/xml")){
+					fileformat="JUNIT";
+			}
+								 
+			if(format.equals("testng/xml")){
+				fileformat="TESTNG";
+			}
+								
+        	if(format.equals("qas/json")){
+				fileformat="QAS";
+			}
 			
 			if(testResultFilePath.endsWith("*.xml") || testResultFilePath.endsWith("*.json"))
 			{
@@ -97,8 +96,8 @@ public class UploadMojo
 				for(String file:filelist)
 				{
 					//upload test results
-					getLog().info("Uploading Testcase");
-					response=Upload.uploadfile(apiurl,apikey,file,format,testsuiteName,platformName,cycleName);
+					getLog().info("Uploading Testcase.....");
+					response=Upload.uploadfile(apiurl,apikey,file,fileformat);
 					if(response.equals("false"))
 					{
 						getLog().info("Can't upload testcase");
@@ -112,8 +111,8 @@ public class UploadMojo
 			else
 			{
 				//upload test results
-				getLog().info("Uploading Testcase");
-				String response=Upload.uploadfile(apiurl,apikey,testResultFilePath,format,testsuiteName,platformName,cycleName);
+				getLog().info("Uploading Testcase.....");
+				String response=Upload.uploadfile(apiurl,apikey,testResultFilePath,fileformat);
 				if(response.equals("false"))
 				{
 					getLog().info("Can't upload testcase");
@@ -127,10 +126,11 @@ public class UploadMojo
 		catch(IOException e)
 		{
 			getLog().info("Can't find test result file.");
+			getLog().info(e.toString());
 		}
 		catch(Exception e)
 		{
-			getLog().info("Some unknown error occured");
+			getLog().info(e.toString());
 		}	
     }
 	

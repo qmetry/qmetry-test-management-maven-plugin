@@ -59,7 +59,7 @@ public class Upload
 		return list;
 	}
 	
-	public static String uploadfile(String url,String automationkey,String filepath,String format,String testsuiteName,String platformName,String cycleName) throws IOException
+	public static String uploadfile(String url,String automationkey,String filepath,String format) throws IOException
 	{
 		String res;
 		
@@ -73,9 +73,9 @@ public class Upload
 			
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		builder.addTextBody("entityType",format, ContentType.TEXT_PLAIN);
-		builder.addTextBody("testsuiteId", testsuiteName, ContentType.TEXT_PLAIN);
-		builder.addTextBody("buildID",cycleName);
-		builder.addTextBody("platformID",platformName);
+		/*builder.addTextBody("testSuiteName", testsuitename, ContentType.TEXT_PLAIN);
+		builder.addTextBody("buildName",cyclename);
+		builder.addTextBody("platformName",platformname);*/
 			
 		File f = new File(filepath);
 		builder.addPart("file", new FileBody(f));
