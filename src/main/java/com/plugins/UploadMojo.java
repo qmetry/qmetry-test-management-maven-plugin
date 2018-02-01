@@ -100,7 +100,8 @@ public class UploadMojo
 					response=Upload.uploadfile(apiurl,apikey,file,fileformat);
 					if(response.equals("false"))
 					{
-						getLog().info("Can't upload testcase");
+						//getLog().info("Couldn't upload testcase.For more information contact QMetry Support.");
+						throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.");
 					}
 					else
 					{
@@ -115,22 +116,26 @@ public class UploadMojo
 				String response=Upload.uploadfile(apiurl,apikey,testResultFilePath,fileformat);
 				if(response.equals("false"))
 				{
-					getLog().info("Can't upload testcase");
+					//getLog().info("Couldn't upload test result.For more information contact QMetry Support.");
+					throw new MojoExecutionException("Couldn't upload test result.For more information contact QMetry Support.");
 				}
 				else
 				{
-					getLog().info("Testcase uploaded successfully");
+					getLog().info("Test result uploaded successfully");
 				}
 			}
 		}
 		catch(IOException e)
 		{
-			getLog().info("Can't find test result file.");
-			getLog().info(e.toString());
+			//getLog().info("Can't find test result file.For more information contact QMetry Support.");
+			e.printStackTrace();
+			throw new MojoExecutionException("Can't find test result file.For more information contact QMetry Support.");
 		}
 		catch(Exception e)
 		{
-			getLog().info(e.toString());
+			//getLog().info("Some unknown error occured.For more information contact QMetry Support.");
+			e.printStackTrace();
+			throw new MojoExecutionException("Some unknown error occured.For more information contact QMetry Support.");
 		}	
     }
 	

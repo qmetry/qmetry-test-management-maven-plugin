@@ -68,7 +68,7 @@ public class Upload
 		HttpPost uploadFile=new HttpPost(url+"/rest/import/createandscheduletestresults/1");
 			
 		uploadFile.addHeader("Accept","application/json");
-		uploadFile.addHeader("apiKey","IuKhGeuzJEeJ3Hsi66CSTpNUU1VGGsyZjS1sCFeF");
+		uploadFile.addHeader("apiKey",automationkey);
 		uploadFile.addHeader("scope","default");
 			
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -87,6 +87,7 @@ public class Upload
 		int code=response.getStatusLine().getStatusCode();
 		if(code!=200)
 		{
+			System.out.println("----------Status Code:"+code+"----------");
 			return "false";
 		}
 		
