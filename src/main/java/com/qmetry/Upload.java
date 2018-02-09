@@ -1,10 +1,12 @@
-package com.plugins;
+package com.qmetry;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.io.UnsupportedEncodingException;
 
 import java.util.Map;
@@ -48,18 +50,22 @@ public class Upload
 		File[] farray=file.getParentFile().listFiles();
 		String path;
 		
-		for(File f:farray)
+		if(farray!=null)
 		{
-			path=f.getPath();
-			if(path.endsWith(extention))
+			for(File f:farray)
 			{
-				list.add(path);
+				path=f.getPath();
+				if(path.endsWith(extention))
+				{
+					list.add(path);
+				}
 			}
+			return list;
 		}
-		return list;
+		return null;
 	}
 	
-	public static String uploadfile(String url,String automationkey,String filepath,String format) throws IOException
+	public static String uploadfile(String url,String automationkey,String filepath,String format,String testsuitekey,String platform,String cycle) throws IOException,ParseException
 	{
 		String res;
 		
@@ -73,9 +79,12 @@ public class Upload
 			
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		builder.addTextBody("entityType",format, ContentType.TEXT_PLAIN);
-		/*builder.addTextBody("testSuiteName", testsuitename, ContentType.TEXT_PLAIN);
-		builder.addTextBody("buildName",cyclename);
-		builder.addTextBody("platformName",platformname);*/
+		if(testsuitekey!=null && !testsuitekey.isEmpty())
+			builder.addTextBody("testsuiteId", testsuitekey, ContentType.TEXT_PLAIN);
+		if(cycle!=null && !cycle.isEmpty())
+			builder.addTextBody("buildID",cycle,ContentType.TEXT_PLAIN);
+		if(platform!=null && !platform.isEmpty())
+			builder.addTextBody("platformID",platform,ContentType.TEXT_PLAIN);
 			
 		File f = new File(filepath);
 		builder.addPart("file", new FileBody(f));
@@ -89,6 +98,31 @@ public class Upload
 		{
 			System.out.println("----------Status Code:"+code+"----------");
 			return "false";
+		}
+		else
+		{
+			HttpEntity entity = response.getEntity();
+			if(entity!=null)
+			{
+				InputStream content = entity.getContent();
+				StringBuilder  builder1 = new StringBuilder();
+				Reader read = new InputStreamReader(content, StandardCharsets.UTF_8);
+				BufferedReader reader = new BufferedReader(read);
+				String line;
+				try {
+					while ((line = reader.readLine()) != null) {
+						builder1.append(line);
+					}
+
+				}
+				finally{
+					reader.close();
+					content.close();
+				}
+				JSONParser parser=new JSONParser();
+				JSONObject responsejson=(JSONObject)parser.parse(builder1.toString());
+				return responsejson.toString();
+			}
 		}
 		
 		res=EntityUtils.toString(response.getEntity());
