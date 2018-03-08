@@ -65,7 +65,7 @@ public class UploadMojo
 	
 	/**
 	 *Format of test result file.
-	 * Valid Format junit/xml , cucumber/json , testng/xml , qas/json
+	 * Valid Format junit/xml , cucumber/json , testng/xml , qas/json , hpuft/xml
 	 */
 	@Parameter( property = "format", required = true)
 	String format;
@@ -73,8 +73,8 @@ public class UploadMojo
 	/**
 	 *TestSuite Key
 	 */
-	@Parameter(property="testsuitekey",required=false)
-	String testsuitekey;
+	@Parameter(property="testsuite",required=false)
+	String testsuite;
 	 
 	/**
 	 *Platform name
@@ -88,17 +88,43 @@ public class UploadMojo
 	@Parameter(property="cycle",required=false)
 	String cycle;
 	
+	/**
+	 *Project Name or or Key Id
+	 */
+	@Parameter(property="project",required=true)
+	String project;
+	
+	/**
+	 *Release Name or Id
+	 */
+	@Parameter(property="release",required=false)
+	String release;
+	
+	/**
+	 *Build Name or Id
+	 */
+	@Parameter(property="build",required=false)
+	String build;
+	
 	@Parameter(property="buildDir",required=false,defaultValue = "${basedir}",readonly=true)
 	String buildDir;
 	
     public void execute()
         throws MojoExecutionException
     {
-		getLog().info("platform:"+platform);
+		
 		try
 		{
+			if(cycle!=null && !cycle.isEmpty())
+			{
+				if(!(release!=null && !release.isEmpty()))
+				{
+					throw new MojoExecutionException("Release is Required when Cycle is provided.\n");
+				}
+			}
 			String fileformat="";
 			String absolutefilepath=buildDir+"/"+filepath;
+			absolutefilepath=absolutefilepath.replace("\\","/");
 			
 			if(format.equals("cucumber/json")){
 				fileformat="CUCUMBER";
@@ -115,55 +141,165 @@ public class UploadMojo
         	if(format.equals("qas/json")){
 				fileformat="QAS";
 			}
-			//relative file path PENDING
-			if(filepath.endsWith("*.xml") || filepath.endsWith("*.json"))
+			if(format.equals("hpuft/xml")){
+				fileformat="HPUFT";
+			}
+			
+			getLog().info("Format:"+format);
+			getLog().info("File Path:"+absolutefilepath);
+			if(project!=null && !project.isEmpty())
 			{
+				getLog().info("Project:"+project);
+			}
+			if(release!=null && !release.isEmpty())
+			{
+				getLog().info("Release:"+release);
+			}
+			if(cycle!=null && !cycle.isEmpty())
+			{
+				getLog().info("Cycle:"+cycle);
+			}
+			if(build!=null && !build.isEmpty())
+			{
+				getLog().info("Build:"+build);
+			}
+			if(testsuite!=null && !testsuite.isEmpty())
+			{
+				getLog().info("Testsuite:"+testsuite);
+			}
+			if(platform!=null && !platform.isEmpty())
+			{
+				getLog().info("Platform:"+platform);
+			}
+			
+			//relative file path PENDING
+			if(format.equals("qas/json"))
+			{
+				File sourceDir=new File(absolutefilepath);
+				getLog().info("Creating Zip file..........");
+				if(sourceDir.isFile())
+				{
+					//getLog().info("In qas/json enter path to directory not file.");
+					throw new MojoExecutionException("In qas/json enter path to directory not file.\n");
+				}
+				String zipfilepath=CreateZip.createZip(absolutefilepath,format);
+				getLog().info("Created Zip File:"+zipfilepath);
+				getLog().info("Uploading Test Results..........");
+				String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,testsuite,platform,cycle,project,release,build,getLog());
+				if(response.equals("false"))
+				{
+					throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.\n");
+				}
+				else
+				{
+					getLog().info("Test results uploaded successfully");
+					getLog().info("Response-->"+response);
+				}
+			}
+			else if(filepath.endsWith("*.xml") || filepath.endsWith("*.json"))
+			{
+				if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml"))
+				{
+					if(filepath.endsWith("*.json"))
+					{
+						throw new MojoExecutionException("Can not upload json files when format is "+format);
+					}
+				}
+				if(format.equals("cucumber/json") && filepath.endsWith("*.xml"))
+				{
+					throw new MojoExecutionException("Can not upload xml files when format is "+format);
+				}
 				String response=null;
-				List<String> filelist=Upload.fetchFiles(absolutefilepath);
+				File f=new File(absolutefilepath);
+				String parentDir=f.getParentFile().getPath();
+				List<String> filelist=Upload.fetchFiles(parentDir,format);
 				if(filelist!=null)
 				{
 					for(String file:filelist)
 					{
 						//upload test results
-						getLog().info("Uploading Testcase.....");
-						response=Upload.uploadfile(url,apikey,file,fileformat,testsuitekey,platform,cycle);
+						getLog().info("Uploading Test Results..........");
+						getLog().info("File:"+file);
+						response=Upload.uploadfile(url,apikey,file,fileformat,testsuite,platform,cycle,project,release,build,getLog());
 						if(response.equals("false"))
 						{
 							//getLog().info("Couldn't upload testcase.For more information contact QMetry Support.");
-							throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.");
+							throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.\n");
 						}
 						else
 						{
-							JSONParser parser=new JSONParser();
-							JSONObject responsejson=(JSONObject)parser.parse(response);
-							JSONArray data=(JSONArray)responsejson.get("data");
 							getLog().info("Testcase uploaded successfully");
-							getLog().info("Response-->"+data.toString());
+							getLog().info("Response-->"+response);
 						}
 					}
 				}
 				else
 				{
-					throw new MojoExecutionException("Can't find test result file.For more information contact QMetry Support.\n");
+					throw new MojoExecutionException("Can not find Files to be uploaded.Check if you have entered valid Path and Format.For more information contact QMetry support.\n");
 				}
 			}
 			else
 			{
-				//upload test results
-				getLog().info("Uploading Testcase.....");
-				String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,testsuitekey,platform,cycle);
-				if(response.equals("false"))
+				File f=new File(absolutefilepath);
+				if(f.isDirectory())
 				{
-					//getLog().info("Couldn't upload test result.For more information contact QMetry Support.");
-					throw new MojoExecutionException("Couldn't upload test result.For more information contact QMetry Support.");
+					/*String response=null;
+					getLog().info("Fetching files from the Directory............");
+					List<String> filelist=Upload.fetchFiles(absolutefilepath,format);
+					if(filelist!=null)
+					{
+						for(String file:filelist)
+						{
+							//upload test results
+							getLog().info("Uploading Test Result..........");
+							getLog().info("File:"+file);
+							response=Upload.uploadfile(url,apikey,file,fileformat,testsuite,platform,cycle,project,release,build,getLog());
+							if(response.equals("false"))
+							{
+								//getLog().info("Couldn't upload testcase.For more information contact QMetry Support.");
+								throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.\n");
+							}
+							else
+							{
+								getLog().info("Testcase uploaded successfully");
+								getLog().info("Response-->"+response);
+							}
+						}
+					}
+					else
+					{
+						throw new MojoExecutionException("Can not find Files to be uploaded.Check if you have entered valid Path and Format.For more information contact QMetry support.\n");
+					}*/
+					getLog().info("Creating Zip file..........");
+					String zipfilepath=CreateZip.createZip(absolutefilepath,format);
+					getLog().info("Created Zip File:"+zipfilepath);
+					getLog().info("Uploading Test Results..........");
+					String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,testsuite,platform,cycle,project,release,build,getLog());
+					if(response.equals("false"))
+					{
+						throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.\n");
+					}
+					else
+					{
+						getLog().info("Test results uploaded successfully");
+						getLog().info("Response-->"+response);
+					}
 				}
 				else
 				{
-					JSONParser parser=new JSONParser();
-					JSONObject responsejson=(JSONObject)parser.parse(response);
-					JSONArray data=(JSONArray)responsejson.get("data");
-					getLog().info("Test result uploaded successfully");
-					getLog().info("Response-->"+data.toString());
+					//upload test results
+					getLog().info("Uploading Test Results..........");
+					String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,testsuite,platform,cycle,project,release,build,getLog());
+					if(response.equals("false"))
+					{
+						//getLog().info("Couldn't upload test result.For more information contact QMetry Support.");
+						throw new MojoExecutionException("Couldn't upload test result.For more information contact QMetry Support.\n");
+					}
+					else
+					{
+						getLog().info("Testcase uploaded successfully");
+						getLog().info("Response-->"+response);
+					}
 				}
 			}
 		}
@@ -185,8 +321,8 @@ public class UploadMojo
 			//getLog().info("Some unknown error occured.For more information contact QMetry Support.");
 			if(e instanceof MojoExecutionException)
 			{
-				getLog().error(e.getMessage());
-				throw new MojoExecutionException("Couldn't upload test result.For more information contact QMetry Support.");
+				//getLog().error(e.getMessage());
+				throw new MojoExecutionException(e.getMessage());
 			}
 			else
 			{

@@ -35,19 +35,23 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import org.apache.maven.plugin.logging.Log;
+
 public class Upload
 {
-	public static List<String> fetchFiles(String filepath)
+	public static List<String> fetchFiles(String filepath,String format)
 	{
 		String extention;
-		if(filepath.endsWith(".xml"))
+		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml"))
 			extention=".xml";
-		else
+		else if(format.equals("cucumber/json"))
 			extention=".json";
+		else
+			return null;
 		
 		List<String> list=new ArrayList<String>();
 		File file=new File(filepath);
-		File[] farray=file.getParentFile().listFiles();
+		File[] farray=file.listFiles();
 		String path;
 		
 		if(farray!=null)
@@ -65,7 +69,7 @@ public class Upload
 		return null;
 	}
 	
-	public static String uploadfile(String url,String automationkey,String filepath,String format,String testsuitekey,String platform,String cycle) throws IOException,ParseException
+	public static String uploadfile(String url,String automationkey,String filepath,String format,String testsuitekey,String platform,String cycle,String project,String release,String build,Log log) throws IOException,ParseException
 	{
 		String res;
 		
@@ -82,9 +86,15 @@ public class Upload
 		if(testsuitekey!=null && !testsuitekey.isEmpty())
 			builder.addTextBody("testsuiteId", testsuitekey, ContentType.TEXT_PLAIN);
 		if(cycle!=null && !cycle.isEmpty())
-			builder.addTextBody("buildID",cycle,ContentType.TEXT_PLAIN);
+			builder.addTextBody("cycleID",cycle,ContentType.TEXT_PLAIN);
 		if(platform!=null && !platform.isEmpty())
 			builder.addTextBody("platformID",platform,ContentType.TEXT_PLAIN);
+		if(project!=null && !project.isEmpty())
+			builder.addTextBody("projectID",project,ContentType.TEXT_PLAIN);
+		if(release!=null && !release.isEmpty())
+			builder.addTextBody("releaseID",release,ContentType.TEXT_PLAIN);
+		if(build!=null && !build.isEmpty())
+			builder.addTextBody("dropID",build,ContentType.TEXT_PLAIN);
 			
 		File f = new File(filepath);
 		builder.addPart("file", new FileBody(f));
@@ -96,7 +106,31 @@ public class Upload
 		int code=response.getStatusLine().getStatusCode();
 		if(code!=200)
 		{
-			System.out.println("----------Status Code:"+code+"----------");
+			log.info("----------Status Code:"+code+"----------");
+			if(code==400)
+			{
+				HttpEntity entity = response.getEntity();
+				if(entity!=null)
+				{
+					InputStream content = entity.getContent();
+					StringBuilder  builder1 = new StringBuilder();
+					Reader read = new InputStreamReader(content, StandardCharsets.UTF_8);
+					BufferedReader reader = new BufferedReader(read);
+					String line;
+					try {
+						while ((line = reader.readLine()) != null) {
+							builder1.append(line);
+						}
+
+					}
+					finally{
+						reader.close();
+						content.close();
+					}
+					log.info("Error Response-->"+builder1.toString());
+				}
+				
+			}
 			return "false";
 		}
 		else

@@ -34,26 +34,32 @@ Step 3: Add the following to the <build> -> <plugins> block in your pom.xml:
 	<version>1.0.0</version>
 	<configuration>
 		<url>https://testmanagement.qmetry.com</url>
-		<apikey>zEzs7iy77D8ARWX8xMFzJRZTzb66W0LCyaK6xdec</apikey>
+		<apikey>zEzs7iy7D8ARWX8xMFzJRZTzb66W0LCyaK6xdec</apikey>
 		<filepath>target\surefire-reports\TEST-demoApp.xml</filepath>
 		<format>junit/xml</format>
-		<testsuitekey>JPI-TS-1</testsuitekey>
-		<platform>IOS</platform>
-		<cycle>MyCycle</cycle>
+		<project>Demo Project</project>
+		<release>Demo Release</release>
+		<cycle>Demo Cycle</cycle>
+		<build>Demo Build</build>
+		<testsuite>Testsuite Key</testsuite>
+		<platform>Demo Platform</platform>	
 	</configuration>
 </plugin>
 
-url - URL to your QMetry instance
+url - URL of your QMetry instance
 apikey - Automation API Key
 filepath - path to result file (or directory for multiple files) relative to build directory
-format - junit/xml testng/xml cucucmber/json qas/json
-testsuitekey (optional) - Key of test suite.
-cycle (optional) - Name of cycle linked to test suite
-platform (optional) - Name of the platform to connect the suite
+format - junit/xml or testng/xml or cucucmber/json or qas/json
+project - Project ID or Project Key or Project name
+release (optional) - Release ID or Release name
+cycle (optional) - Cycle Id or Cycle Name
+build (optional) - Build ID or Build name
+testsuite (optional) - Test Suite ID or Entity Key
+platform (optional) - Platform Id or Platform Name
 
 Important Points
-cycle refers to the Cycle Name in QMetry Test Management, and must be included in Default Release of your project.
-testsuitekey should include Test Suite Key from your QMetry Test Management project. Ignore the field if you want to create a new Test Suite for the results.
+cycle refers to the Cycle Name in QMetry Test Management, and must be included in Release specified by release field of your project.
+testsuite should include Test Suite Key or Id from your QMetry Test Management project. Ignore the field if you want to create a new Test Suite for the results.
 platform (if specified), must be included in your QMetry Test Management project, before the task is executed.
 
 Step 4:Genetrate Test Result(s) for your project.
