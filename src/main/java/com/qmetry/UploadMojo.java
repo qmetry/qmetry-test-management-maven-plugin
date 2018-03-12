@@ -46,7 +46,7 @@ public class UploadMojo
     extends AbstractMojo
 {
     /**
-     * QTM url.
+     * QTM Base Url.
      */
     @Parameter( property = "url", required = true )
     String url;
@@ -89,7 +89,7 @@ public class UploadMojo
 	String cycle;
 	
 	/**
-	 *Project Name or or Key Id
+	 *Project Name or Key or Id
 	 */
 	@Parameter(property="project",required=true)
 	String project;
@@ -235,7 +235,7 @@ public class UploadMojo
 				}
 				else
 				{
-					throw new MojoExecutionException("Can not find Files to be uploaded.Check if you have entered valid Path and Format.For more information contact QMetry support.\n");
+					throw new MojoExecutionException("Can not find Files to be uploaded.Check if you have entered valid Path and Format.For more information contact QMetry Support.\n");
 				}
 			}
 			else
@@ -331,6 +331,4 @@ public class UploadMojo
 			}
 		}	
     }
-	
-	
 }
