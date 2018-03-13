@@ -44,7 +44,7 @@ QMetry Test Management Maven Plugin uploads result file(s) generated in a Maven 
 		&lt;build&gt;Demo Build&lt;/build&gt;
 		&lt;testsuite&gt;Testsuite Key&lt;/testsuite&gt;
 		&lt;platform&gt;Demo Platform&lt;/platform&gt;
-	<&lt;/configuration&gt;
+	&lt;/configuration&gt;
 &lt;/plugin&gt;
 <br></br>
 <br>url - URL of your QMetry instance</br>
