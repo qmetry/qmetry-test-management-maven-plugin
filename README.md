@@ -16,36 +16,36 @@ QMetry Test Management Maven Plugin uploads result file(s) generated in a Maven 
 <br>Open the pom.xml and add the configurations as described on the Automation API screen for Maven.</br> </p>
 
 <p><h4>Step 2:</h4>Add following to the POM.xml:
-&lt;pluginRepositories&gt;
-    <t>&lt;pluginRepository&gt;</t>
-        &lt;id&gt;qmetry-test-management-maven-plugin-mvn-repo&lt;/id&gt;
-        &lt;url&gt;https://raw.github.com/qmetry/qmetry-test-management-maven-plugin/mvn-repo/&lt;/url&gt;
-        &lt;snapshots&gt;
-            &lt;enabled>true&lt;/enabled&gt;
-            &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
-        &lt;/snapshots&gt;
-    &lt;/pluginRepository&gt;
-&lt;/pluginRepositories&gt;
+<br>&lt;pluginRepositories&gt;</br>
+    <br><t>&lt;pluginRepository&gt;</t></br>
+        <br>&lt;id&gt;qmetry-test-management-maven-plugin-mvn-repo&lt;/id&gt;</br>
+        <br>&lt;url&gt;https://raw.github.com/qmetry/qmetry-test-management-maven-plugin/mvn-repo/&lt;/url&gt;</br>
+        <br>&lt;snapshots&gt;</br>
+            <br>&lt;enabled&gt;true&lt;/enabled&gt;</br>
+            <br>&lt;updatePolicy&gt;always&lt;/updatePolicy&gt;</br>
+        <br>&lt;/snapshots&gt;</br>
+    <br>&lt;/pluginRepository&gt;</br>
+<br>&lt;/pluginRepositories&gt;</br>
 </p>
 
 <p><br><h4>Step 3:</h4>Add the following to the <build> -> <plugins> block in your pom.xml:</br>
-&lt;plugin&gt;
-	&lt;groupId&gt;com.qmetry&lt;/groupId&gt;
-	&lt;artifactId&gt;qmetry-test-management-maven-plugin&lt;/artifactId&gt;
-	&lt;version&gt;1.0.0&lt;/version&gt;
-	&lt;configuration&gt;
-		&lt;url&gt;https://testmanagement.qmetry.com&lt;/url&gt;
-		&lt;apikey&gt;zEzs7iy7D8ARWX8xMFzJRZTzb66W0LCyaK6xde&lt;/apikey&gt;
-		&lt;filepath&gt;target\surefire-reports\TEST-demoApp.xml&lt;/filepath&gt;
-		&lt;format&gt;junit/xml&lt;/format&gt;
-		&lt;project&gt;Demo Project&lt;/project&gt;
-		&lt;release&gt;Demo Release&lt;/release&gt;
-		&lt;cycle&gt;Demo Cycle&lt;/cycle&gt;
-		&lt;build&gt;Demo Build&lt;/build&gt;
-		&lt;testsuite&gt;Testsuite Key&lt;/testsuite&gt;
-		&lt;platform&gt;Demo Platform&lt;/platform&gt;
-	&lt;/configuration&gt;
-&lt;/plugin&gt;
+<br>&lt;plugin&gt;</br>
+	<br>&lt;groupId&gt;com.qmetry&lt;/groupId&gt;</br>
+	<br>&lt;artifactId&gt;qmetry-test-management-maven-plugin&lt;/artifactId&gt;</br>
+	<br>&lt;version&gt;1.0.0&lt;/version&gt;</br>
+	<br>&lt;configuration&gt;</br>
+		<br>&lt;url&gt;https://testmanagement.qmetry.com&lt;/url&gt;</br>
+		<br>&lt;apikey&gt;zEzs7iy7D8ARWX8xMFzJRZTzb66W0LCyaK6xde&lt;/apikey&gt;</br>
+		<br>&lt;filepath&gt;target\surefire-reports\TEST-demoApp.xml&lt;/filepath&gt;</br>
+		<br>&lt;format&gt;junit/xml&lt;/format&gt;</br>
+		<br>&lt;project&gt;Demo Project&lt;/project&gt;</br>
+		<br>&lt;release&gt;Demo Release&lt;/release&gt;</br>
+		<br>&lt;cycle&gt;Demo Cycle&lt;/cycle&gt;</br>
+		<br>&lt;build&gt;Demo Build&lt;/build&gt;</br>
+		<br>&lt;testsuite&gt;Testsuite Key&lt;/testsuite&gt;</br>
+		<br>&lt;platform&gt;Demo Platform&lt;/platform&gt;</br>
+	<br>&lt;/configuration&gt;</br>
+<br>&lt;/plugin&gt;</br>
 <br></br>
 <br>url - URL of your QMetry instance</br>
 <br>apikey - Automation API Key</br>
