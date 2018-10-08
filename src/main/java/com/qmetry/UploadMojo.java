@@ -122,6 +122,14 @@ public class UploadMojo
 					throw new MojoExecutionException("Release is Required when Cycle is provided.\n");
 				}
 			}
+			if(build!=null && !build.isEmpty())
+			{
+				if(!(release!=null && !release.isEmpty()) || !(cycle!=null && !cycle.isEmpty()))
+				{
+					throw new MojoExecutionException("Release and Cycle are required when Build is provided\n");
+				}
+			}
+			
 			String fileformat="";
 			String absolutefilepath=buildDir+"/"+filepath;
 			absolutefilepath=absolutefilepath.replace("\\","/");
@@ -172,10 +180,13 @@ public class UploadMojo
 				getLog().info("Platform:"+platform);
 			}
 			
-			//relative file path PENDING
 			if(format.equals("qas/json"))
 			{
 				File sourceDir=new File(absolutefilepath);
+				if(!sourceDir.exists())
+				{
+					throw new FileNotFoundException("Can't find file specified : "+sourceDir.getAbsolutePath());
+				}
 				getLog().info("Creating Zip file..........");
 				if(sourceDir.isFile())
 				{
@@ -188,7 +199,7 @@ public class UploadMojo
 				String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,testsuite,platform,cycle,project,release,build,getLog());
 				if(response.equals("false"))
 				{
-					throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.\n");
+					throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 				}
 				else
 				{
@@ -211,7 +222,12 @@ public class UploadMojo
 				}
 				String response=null;
 				File f=new File(absolutefilepath);
-				String parentDir=f.getParentFile().getPath();
+				File file1=f.getParentFile();
+				if(!file1.exists())
+				{
+					throw new FileNotFoundException("Can't find file specified : "+file1.getAbsolutePath());
+				}
+				String parentDir=file1.getPath();
 				List<String> filelist=Upload.fetchFiles(parentDir,format);
 				if(filelist!=null)
 				{
@@ -223,8 +239,8 @@ public class UploadMojo
 						response=Upload.uploadfile(url,apikey,file,fileformat,testsuite,platform,cycle,project,release,build,getLog());
 						if(response.equals("false"))
 						{
-							//getLog().info("Couldn't upload testcase.For more information contact QMetry Support.");
-							throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.\n");
+							//getLog().info("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information");
+							throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 						}
 						else
 						{
@@ -235,41 +251,18 @@ public class UploadMojo
 				}
 				else
 				{
-					throw new MojoExecutionException("Can not find Files to be uploaded.Check if you have entered valid Path and Format.For more information contact QMetry Support.\n");
+					throw new MojoExecutionException("Can not find Files to be uploaded.Check if you have entered valid Path and Format.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 				}
 			}
 			else
 			{
 				File f=new File(absolutefilepath);
+				if(!f.exists())
+				{
+					throw new FileNotFoundException("Can't find file specified : "+f.getAbsolutePath());
+				}
 				if(f.isDirectory())
 				{
-					/*String response=null;
-					getLog().info("Fetching files from the Directory............");
-					List<String> filelist=Upload.fetchFiles(absolutefilepath,format);
-					if(filelist!=null)
-					{
-						for(String file:filelist)
-						{
-							//upload test results
-							getLog().info("Uploading Test Result..........");
-							getLog().info("File:"+file);
-							response=Upload.uploadfile(url,apikey,file,fileformat,testsuite,platform,cycle,project,release,build,getLog());
-							if(response.equals("false"))
-							{
-								//getLog().info("Couldn't upload testcase.For more information contact QMetry Support.");
-								throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.\n");
-							}
-							else
-							{
-								getLog().info("Testcase uploaded successfully");
-								getLog().info("Response-->"+response);
-							}
-						}
-					}
-					else
-					{
-						throw new MojoExecutionException("Can not find Files to be uploaded.Check if you have entered valid Path and Format.For more information contact QMetry support.\n");
-					}*/
 					getLog().info("Creating Zip file..........");
 					String zipfilepath=CreateZip.createZip(absolutefilepath,format);
 					getLog().info("Created Zip File:"+zipfilepath);
@@ -277,7 +270,7 @@ public class UploadMojo
 					String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,testsuite,platform,cycle,project,release,build,getLog());
 					if(response.equals("false"))
 					{
-						throw new MojoExecutionException("Couldn't upload testcase.For more information contact QMetry Support.\n");
+						throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 					}
 					else
 					{
@@ -287,13 +280,21 @@ public class UploadMojo
 				}
 				else
 				{
+					if(absolutefilepath.endsWith(".xml") && !(fileformat.equals("HPUFT") || fileformat.equals("JUNIT") || fileformat.equals("TESTNG")))
+					{
+						throw new MojoExecutionException("Cannot upload xml files when format is " + format + "\nPlease send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
+					}
+					else if(absolutefilepath.endsWith(".json") && !fileformat.equals("CUCUMBER"))
+					{
+						throw new MojoExecutionException("Cannot upload json files when format is " + format + "\nPlease send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
+					}
 					//upload test results
 					getLog().info("Uploading Test Results..........");
 					String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,testsuite,platform,cycle,project,release,build,getLog());
 					if(response.equals("false"))
 					{
-						//getLog().info("Couldn't upload test result.For more information contact QMetry Support.");
-						throw new MojoExecutionException("Couldn't upload test result.For more information contact QMetry Support.\n");
+						//getLog().info("Couldn't upload test result.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information");
+						throw new MojoExecutionException("Couldn't upload test result.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 					}
 					else
 					{
@@ -305,20 +306,20 @@ public class UploadMojo
 		}
 		catch(FileNotFoundException e)
 		{
-			//getLog().info("Can't find test result file.For more information contact QMetry Support.");
+			//getLog().info("Can't find test result file.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information");
 			//getLog().error(e.getMessage());
 			e.printStackTrace();
-			throw new MojoExecutionException("Can't find test result file.For more information contact QMetry Support.\n");
+			throw new MojoExecutionException("Can't find test result file.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 		}
 		catch(ParseException e)
 		{
 			//getLog().error(e.getMessage());
 			e.printStackTrace();
-			throw new MojoExecutionException("JSON Parse Exception has occured.For more information contact QMetry Support.\n");
+			throw new MojoExecutionException("JSON Parse Exception has occured.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 		}
 		catch(Exception e)
 		{
-			//getLog().info("Some unknown error occured.For more information contact QMetry Support.");
+			//getLog().info("Some unknown error occured.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information");
 			if(e instanceof MojoExecutionException)
 			{
 				//getLog().error(e.getMessage());
@@ -327,7 +328,7 @@ public class UploadMojo
 			else
 			{
 				e.printStackTrace();
-				throw new MojoExecutionException("Some error has occured.For more information contact QMetry Support.\n");
+				throw new MojoExecutionException("Some error has occured.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 			}
 		}	
     }

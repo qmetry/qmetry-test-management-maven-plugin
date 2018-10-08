@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.Iterator;
 
 import java.net.ProtocolException;
+import java.io.FileNotFoundException;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -39,7 +40,7 @@ import org.apache.maven.plugin.logging.Log;
 
 public class Upload
 {
-	public static List<String> fetchFiles(String filepath,String format)
+	public static List<String> fetchFiles(String filepath,String format) throws FileNotFoundException
 	{
 		String extention;
 		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml"))
@@ -51,6 +52,10 @@ public class Upload
 		
 		List<String> list=new ArrayList<String>();
 		File file=new File(filepath);
+		if(!file.exists())
+		{
+			throw new FileNotFoundException("Cannot find file : "+file.getAbsolutePath());
+		}
 		File[] farray=file.listFiles();
 		String path;
 		
@@ -94,7 +99,7 @@ public class Upload
 		if(release!=null && !release.isEmpty())
 			builder.addTextBody("releaseID",release,ContentType.TEXT_PLAIN);
 		if(build!=null && !build.isEmpty())
-			builder.addTextBody("dropID",build,ContentType.TEXT_PLAIN);
+			builder.addTextBody("buildID",build,ContentType.TEXT_PLAIN);
 			
 		File f = new File(filepath);
 		builder.addPart("file", new FileBody(f));
@@ -155,7 +160,7 @@ public class Upload
 				}
 				JSONParser parser=new JSONParser();
 				JSONObject responsejson=(JSONObject)parser.parse(builder1.toString());
-				return responsejson.toString();
+				return responsejson.toString().replace("\\/","/");
 			}
 		}
 		
