@@ -74,7 +74,7 @@ public class Upload
 		return null;
 	}
 	
-	public static String uploadfile(String url,String automationkey,String filepath,String format,String testsuitekey,String platform,String cycle,String project,String release,String build,Log log) throws IOException,ParseException
+	public static String uploadfile(String url,String automationkey,String filepath,String format,String testsuitekey,String testsuiteName,String platform,String cycle,String project,String release,String build,Log log) throws IOException,ParseException
 	{
 		String res;
 		
@@ -90,6 +90,8 @@ public class Upload
 		builder.addTextBody("entityType",format, ContentType.TEXT_PLAIN);
 		if(testsuitekey!=null && !testsuitekey.isEmpty())
 			builder.addTextBody("testsuiteId", testsuitekey, ContentType.TEXT_PLAIN);
+		if(testsuiteName!=null && !testsuiteName.isEmpty())
+			builder.addTextBody("testsuiteName", testsuiteName, ContentType.TEXT_PLAIN);
 		if(cycle!=null && !cycle.isEmpty())
 			builder.addTextBody("cycleID",cycle,ContentType.TEXT_PLAIN);
 		if(platform!=null && !platform.isEmpty())
