@@ -74,7 +74,7 @@ public class Upload
 		return null;
 	}
 	
-	public static String uploadfile(String url,String automationkey,String filepath,String format,String testsuitekey,String testsuiteName,String platform,String cycle,String project,String release,String build,Log log) throws IOException,ParseException
+	public static String uploadfile(String url,String automationkey,String filepath,String format,String automationHierarchy,String testsuitekey,String testsuiteName,String platform,String cycle,String project,String release,String build,Log log) throws IOException,ParseException
 	{
 		String res;
 		
@@ -88,6 +88,8 @@ public class Upload
 			
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		builder.addTextBody("entityType",format, ContentType.TEXT_PLAIN);
+		if(automationHierarchy!=null && !automationHierarchy.isEmpty())
+			builder.addTextBody("automationHierarchy", automationHierarchy, ContentType.TEXT_PLAIN);
 		if(testsuitekey!=null && !testsuitekey.isEmpty())
 			builder.addTextBody("testsuiteId", testsuitekey, ContentType.TEXT_PLAIN);
 		if(testsuiteName!=null && !testsuiteName.isEmpty())

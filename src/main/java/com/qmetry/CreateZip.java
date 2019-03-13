@@ -86,17 +86,19 @@ public class CreateZip
 		{
 			extention="json";
 		}
-		/*else if(formats.equals("qas/json"))
-		{
-			extention="qas";
-			sourceDir += sourceDir + "/" + "json";
-			//System.out.println("DEBUG"+sourceDir);
-		}*/
 		File dir = new File(sourceDir);
 		File zipFile = new File(zipfile);
 		FileOutputStream fout = new FileOutputStream(zipFile,false);
 		ZipOutputStream zout = new ZipOutputStream(fout);
 		zipSubDirectory("", dir, zout,extention);
+		if(formats.equals("qas/json"))
+		{
+			File img = new File(sourceDir + "/img");
+			if(img.exists())
+			{
+				zipSubDirectory("img/", img, zout, "png");
+			}
+		}
 		zout.close();
 		ZipFile zf = null;
 		try
@@ -128,12 +130,10 @@ public class CreateZip
 		{
 			files = dir.listFiles(JSON_FILE_FILTER);
 		}
-		/*else if(extention.equals("qas"))
+		else if(extention.equals("png"))
 		{
-			//System.out.println("DEBUG"+" before dir.listFiles()");
 			files = dir.listFiles();
-			//System.out.println("DEBUG"+" after dir.listFiles()");
-		}*/
+		}
 		if(files!=null)
 		{
 			for (File file : files) 

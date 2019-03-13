@@ -41,6 +41,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 		<filepath>test-results\</filepath>
 		<format>qas/json</format>
 		<project>Demo Project</project>
+		<automationHierarchy>1</automationHierarchy>
 		<testsuite>Testsuite Key</testsuite>
 		<testsuiteName>Demo Test suite</testsuiteName>
 		<release>Demo Release</release>
@@ -56,6 +57,14 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * **filepath** - path to result file (or directory for multiple files) relative to build directory
 * **format** - junit/xml or testng/xml or cucucmber/json or qas/json or hpuft/xml
 * **project** - Project ID or Project Key or Project name
+* **automationHierarchy (optional)** - Hierarchy which will be used to parse test result files on QTM for JUnit and TestNG (In case of other frameworks automationHierarchy will be skipped if provided)
+  * JUnit 
+    * 1 - Use current Hierarchy in which JUnit Testcase is treated as TestStep and Testsuite is treated as Testcase
+    * 2 - Use Junit Testcase as Testcase and link all those (from all testsuites and all files of Junit) to one Testsuite
+    * 3 - Create Multiple Testsuites and then link their respective testcases in corresponding Testsuites
+  * TestNG
+    * 1 - Use class as Testcase and test-method as TestStep
+    * 2 - Use test-method as Testcase
 * **release (optional)** - Release ID or Release name
 * **cycle (optional)** - Cycle Id or Cycle Name
 * **build (optional)** - Build ID or Build name
@@ -64,6 +73,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * **platform (optional)** - Platform Id or Platform Name
 
 #### Important Points
+* Automation Hierarchy which will be used to parse test result files on QTM is only supported for TestNG and JUnit framework.
 * cycle refers to the Cycle Name in QMetry Test Management, and must be included in Release specified by release field of your project.
 * testsuite should include Test Suite Key or Id from your QMetry Test Management project. Ignore the field if you want to create a new Test Suite for the results.
 * platform (if specified), must be included in your QMetry Test Management project, before the task is executed.
