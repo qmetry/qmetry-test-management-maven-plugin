@@ -102,8 +102,14 @@ public class UploadMojo
 	/**
 	 *Project Name or Key or Id
 	 */
-	@Parameter(property="project",required=true)
+	@Parameter(property="project",required=false)
 	String project;
+
+	/**
+	 *Project Name or Key or Id
+	 */
+	@Parameter(property="qtmProject",required=false)
+	String qtmProject;
 	
 	/**
 	 *Release Name or Id
@@ -123,9 +129,22 @@ public class UploadMojo
     public void execute()
         throws MojoExecutionException
     {
+		String projectId;
 		
 		try
 		{
+			if(qtmProject!=null && !qtmProject.isEmpty())
+			{
+				projectId = qtmProject;
+			}
+			else if(project!=null && !project.isEmpty())
+			{
+				projectId = project;
+			}
+			else
+			{
+				throw new MojoExecutionException("Please provide Project name, key or id in 'project' or 'qtmProject' parameter");
+			}
 			if(cycle!=null && !cycle.isEmpty())
 			{
 				if(!(release!=null && !release.isEmpty()))
@@ -205,9 +224,9 @@ public class UploadMojo
 			{
 				getLog().info("Automation Hierarchy:" + autoHierarchy);
 			}
-			if(project!=null && !project.isEmpty())
+			if(projectId!=null && !projectId.isEmpty())
 			{
-				getLog().info("Project:"+project);
+				getLog().info("ProjectId:"+projectId);
 			}
 			if(release!=null && !release.isEmpty())
 			{
@@ -250,7 +269,7 @@ public class UploadMojo
 				String zipfilepath=CreateZip.createZip(absolutefilepath,format);
 				getLog().info("Created Zip File:"+zipfilepath);
 				getLog().info("Uploading Test Results..........");
-				String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,project,release,build,getLog());
+				String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build,getLog());
 				if(response.equals("false"))
 				{
 					throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
@@ -290,7 +309,7 @@ public class UploadMojo
 						//upload test results
 						getLog().info("Uploading Test Results..........");
 						getLog().info("File:"+file);
-						response=Upload.uploadfile(url,apikey,file,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,project,release,build,getLog());
+						response=Upload.uploadfile(url,apikey,file,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build,getLog());
 						if(response.equals("false"))
 						{
 							//getLog().info("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information");
@@ -321,7 +340,7 @@ public class UploadMojo
 					String zipfilepath=CreateZip.createZip(absolutefilepath,format);
 					getLog().info("Created Zip File:"+zipfilepath);
 					getLog().info("Uploading Test Results..........");
-					String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,project,release,build,getLog());
+					String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build,getLog());
 					if(response.equals("false"))
 					{
 						throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
@@ -344,7 +363,7 @@ public class UploadMojo
 					}
 					//upload test results
 					getLog().info("Uploading Test Results..........");
-					String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,project,release,build,getLog());
+					String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build,getLog());
 					if(response.equals("false"))
 					{
 						//getLog().info("Couldn't upload test result.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information");

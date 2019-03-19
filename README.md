@@ -40,7 +40,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 		<apikey>zEzs7iy7D8ARWX8xMFzJRZTzb66W0LCyaK6xde</apikey>
 		<filepath>test-results\</filepath>
 		<format>qas/json</format>
-		<project>Demo Project</project>
+		<project>Demo Project</project> <!-- or <qtmProject>Demo Project</qtmProject> -->
 		<automationHierarchy>1</automationHierarchy>
 		<testsuite>Testsuite Key</testsuite>
 		<testsuiteName>Demo Test suite</testsuiteName>
@@ -52,11 +52,11 @@ Open the pom.xml and add the configurations as described on the Automation API s
 </plugin>
 ```
 
-* **url** - URL of your QMetry instance
-* **apikey** - Automation API Key
-* **filepath** - path to result file (or directory for multiple files) relative to build directory
-* **format** - junit/xml or testng/xml or cucucmber/json or qas/json or hpuft/xml
-* **project** - Project ID or Project Key or Project name
+* **url (required)** - URL of your QMetry instance
+* **apikey (required)** - Automation API Key
+* **filepath (required)** - path to result file (or directory for multiple files) relative to build directory
+* **format (required)** - junit/xml or testng/xml or cucucmber/json or qas/json or hpuft/xml
+* **project or qtmProject (required)** - Project ID or Project Key or Project name
 * **automationHierarchy (optional)** - Hierarchy which will be used to parse test result files on QTM for JUnit and TestNG (In case of other frameworks automationHierarchy will be skipped if provided)
   * JUnit 
     * 1 - Use current Hierarchy in which JUnit Testcase is treated as TestStep and Testsuite is treated as Testcase
@@ -73,6 +73,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * **platform (optional)** - Platform Id or Platform Name
 
 #### Important Points
+* Project name, key or id can be provided in 'project' or 'qtmProject' parameter, if both are provided then 'project' will be ignored.
 * Automation Hierarchy which will be used to parse test result files on QTM is only supported for TestNG and JUnit framework.
 * cycle refers to the Cycle Name in QMetry Test Management, and must be included in Release specified by release field of your project.
 * testsuite should include Test Suite Key or Id from your QMetry Test Management project. Ignore the field if you want to create a new Test Suite for the results.
