@@ -65,7 +65,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
   * TestNG
     * 1 - Use 'class' tag as Testcase and 'test-method' tag as TestStep
     * 2 - Use 'test-method' tag as Testcase
-		* 3 - Use 'test' tag as Testcase and 'test-method' tag as TestStep
+    * 3 - Use 'test' tag as Testcase and 'test-method' tag as TestStep
 * **release (optional)** - Release ID or Release name
 * **cycle (optional)** - Cycle Id or Cycle Name
 * **build (optional)** - Build ID or Build name
