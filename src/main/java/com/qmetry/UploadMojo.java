@@ -192,7 +192,7 @@ public class UploadMojo
 				fileformat="TESTNG";
 				if(automationHierarchy!=null && !automationHierarchy.isEmpty())
 				{
-					if(automationHierarchy.equals("1") || automationHierarchy.equals("2"))
+					if(automationHierarchy.equals("1") || automationHierarchy.equals("2") || automationHierarchy.equals("3"))
 					{
 						autoHierarchy = automationHierarchy;
 					}

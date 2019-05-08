@@ -16,7 +16,7 @@ OR directly visit https://testmanagement.qmetry.com/#/automation-api
 
 Open the pom.xml and add the configurations as described on the Automation API screen for Maven.
 
-### Step 2:Add following to the POM.xml:
+### Step 2:Add following to the pom.xml:
 ```
 <pluginRepositories>
 	<pluginRepository>
@@ -63,8 +63,9 @@ Open the pom.xml and add the configurations as described on the Automation API s
     * 2 - Use Junit Testcase as Testcase and link all those (from all testsuites and all files of Junit) to one Testsuite
     * 3 - Create Multiple Testsuites and then link their respective testcases in corresponding Testsuites
   * TestNG
-    * 1 - Use class as Testcase and test-method as TestStep
-    * 2 - Use test-method as Testcase
+    * 1 - Use 'class' tag as Testcase and 'test-method' tag as TestStep
+    * 2 - Use 'test-method' tag as Testcase
+		* 3 - Use 'test' tag as Testcase and 'test-method' tag as TestStep
 * **release (optional)** - Release ID or Release name
 * **cycle (optional)** - Cycle Id or Cycle Name
 * **build (optional)** - Build ID or Build name
