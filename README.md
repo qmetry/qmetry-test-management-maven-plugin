@@ -5,14 +5,14 @@ QMetry Test Management Maven Plugin uploads result file(s) generated in a Maven 
 
 ## How to use the plugin?
 
-### Step 1:Getting data from QMetry Test Management
+### Step 1: Prerequisite
 
 To get qmetry configuration from QMetry Test Management :-
 
 1) Login to QMetry Test Management application.
 2) Choose an existing project or create new.
-3) Goto Apps > Automation App > Automation API
-OR directly visit https://testmanagement.qmetry.com/#/automation-api
+3) Goto Integration > Automation API > Copy Automation API Key
+OR directly visit https://testmanagement.qmetry.com/#/integration/automation-api
 
 Open the pom.xml and add the configurations as described on the Automation API screen for Maven.
 
@@ -48,6 +48,8 @@ Open the pom.xml and add the configurations as described on the Automation API s
 		<cycle>Demo Cycle</cycle>
 		<build>Demo Build</build>
 		<platform>Demo Platform</platform>
+		<testcaseFields>{"description":"Automated Test case","testCaseType":"Security","testCaseState":"Rejected","component":["x"],"priority":"Blocker","testcaseOwner":"Jack","estimatedTime":"143","userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testcaseFields>
+		<testsuiteFields>{"description":"Automated Test suite","testsuiteOwner":"Jack","testSuiteState":"New","userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testsuiteFields>
 	</configuration>
 </plugin>
 ```
@@ -72,6 +74,8 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * **testsuite (optional)** - Test suite ID or Entity Key (This will upload results to existing test suite)
 * **testsuiteName (optional)** - Test suite Name (This will create a new test suite with given name)
 * **platform (optional)** - Platform Id or Platform Name
+* **testcaseFields (optional)** - Mention system defined fields and user defined fields for test case as shown in Test Case JSON format above.
+* **testsuiteFields (optional)** - Mention system defined fields and user defined fields for test suite as shown in Test Suite JSON format above.
 
 #### Important Points
 * Project name, key or id can be provided in 'project' or 'qtmProject' parameter, if both are provided then 'project' will be ignored.
@@ -81,8 +85,9 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * platform (if specified), must be included in your QMetry Test Management project, before the task is executed.
 * In case of QAS enter path to the folder in which testresult folder will be created. Plugin will automatically fetch testresult folder and upload results.
 * Enter directory path to upload zip file plugin will create zip file and upload it to QMetry Test Management.
+* testsuiteFields parameter will be ignored if existing Test suite Id is used to upload results.
 
-### Step 4:Genetrate Test Result(s) for your project.
+### Step 4:Generate Test Result(s) for your project.
 
 ### Step 5:Upload Test Result(s) to QMetry Test Management by executing following goal:
 ```
