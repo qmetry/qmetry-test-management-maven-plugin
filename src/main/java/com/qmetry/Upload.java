@@ -1,42 +1,31 @@
 package com.qmetry;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.BufferedReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.io.UnsupportedEncodingException;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.Iterator;
+import java.util.List;
 
-import java.net.ProtocolException;
-import java.io.FileNotFoundException;
 import org.apache.http.HttpEntity;
-import org.apache.http.auth.InvalidCredentialsException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.util.EntityUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import javax.xml.bind.DatatypeConverter;
-import org.json.simple.JSONObject;
+import org.apache.http.util.EntityUtils;
+import org.apache.maven.plugin.logging.Log;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import org.apache.maven.plugin.logging.Log;
+import org.json.*;
 
 public class Upload
 {
@@ -74,7 +63,9 @@ public class Upload
 		return null;
 	}
 	
-	public static String uploadfile(String url,String automationkey,String filepath,String format,String automationHierarchy,String testsuitekey,String testsuiteName,String platform,String cycle,String project,String release,String build,Log log) throws IOException,ParseException
+	public static String uploadfile(String url, String automationkey, String filepath, String format, String automationHierarchy, 
+			String testsuitekey, String testsuiteName, String platform, String cycle, String project, String release, String build,
+			String testsuiteFields, String testcaseFields, Log log) throws IOException,ParseException
 	{
 		String res;
 		
@@ -104,6 +95,12 @@ public class Upload
 			builder.addTextBody("releaseID",release,ContentType.TEXT_PLAIN);
 		if(build!=null && !build.isEmpty())
 			builder.addTextBody("buildID",build,ContentType.TEXT_PLAIN);
+		
+		if(testcaseFields!=null && !testcaseFields.isEmpty())
+			builder.addTextBody("testcase_fields", testcaseFields, ContentType.TEXT_PLAIN);
+		
+		if(testsuiteFields!=null && !testsuiteFields.isEmpty())
+			builder.addTextBody("testsuite_fields", testsuiteFields, ContentType.TEXT_PLAIN);
 			
 		File f = new File(filepath);
 		builder.addPart("file", new FileBody(f));
@@ -173,4 +170,5 @@ public class Upload
 		
 		return res;
 	}
+	
 }
