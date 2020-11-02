@@ -29,18 +29,14 @@ public class CreateZip
 	
 	public static String createZip(String sourceDir, String formats) throws IOException,FileNotFoundException {
 		String resultDir="";
-		if(formats.equals("qas/json"))
-		{
+		if(formats.equals("qas/json")) {
 			File testDir=lastFileModified(sourceDir);
-			if(testDir==null)
-			{
+			if(testDir==null) {
 				throw new FileNotFoundException("Cannot find latest test-results directory for QAS. Make sure you have entered correct file path.");
 			}
 			//System.out.println(testDir.getPath());
 			resultDir=testDir.getPath();
-		}
-		else
-		{
+		} else {
 			resultDir=sourceDir;
 		}
 		
@@ -75,15 +71,11 @@ public class CreateZip
 	
 	 
 
-	public static void zipDirectory(String sourceDir, String zipfile, String formats) throws IOException 
-	{
+	public static void zipDirectory(String sourceDir, String zipfile, String formats) throws IOException {
 		String extention="";
-		if(formats.equals("junit/xml") || formats.equals("testng/xml") || formats.equals("hpuft/xml")) 
-		{
+		if(formats.equals("junit/xml") || formats.equals("testng/xml") || formats.equals("hpuft/xml") || formats.equals("robot/xml")) {
 			extention="xml";
-		}
-		else if(formats.equals("cucumber/json") || formats.equals("qas/json"))
-		{
+		} else if(formats.equals("cucumber/json") || formats.equals("qas/json")) {
 			extention="json";
 		}
 		File dir = new File(sourceDir);
@@ -91,27 +83,21 @@ public class CreateZip
 		FileOutputStream fout = new FileOutputStream(zipFile,false);
 		ZipOutputStream zout = new ZipOutputStream(fout);
 		zipSubDirectory("", dir, zout,extention);
-		if(formats.equals("qas/json"))
-		{
+		if(formats.equals("qas/json")) {
 			File img = new File(sourceDir + "/img");
-			if(img.exists())
-			{
+			if(img.exists()) {
 				zipSubDirectory("img/", img, zout, "png");
 			}
 		}
 		zout.close();
 		ZipFile zf = null;
-		try
-		{
+		try {
 			zf = new ZipFile(zipFile);
 			int size = zf.size();
-			if(size == 0)
-			{
+			if(size == 0) {
 				throw new FileNotFoundException("Cannot find files of proper format in directory : "+sourceDir);
 			}
-		}
-		finally
-		{
+		} finally {
 			if(zf!=null)
 				zf.close();
 		}
