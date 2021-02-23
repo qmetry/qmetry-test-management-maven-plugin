@@ -21,18 +21,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.maven.plugin.logging.Log;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.json.*;
 
 public class Upload
 {
 	public static List<String> fetchFiles(String filepath,String format) throws FileNotFoundException
 	{
 		String extention;
-		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml"))
+		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml") || format.equals("robot/xml"))
 			extention=".xml";
 		else if(format.equals("cucumber/json"))
 			extention=".json";
@@ -41,20 +39,16 @@ public class Upload
 		
 		List<String> list=new ArrayList<String>();
 		File file=new File(filepath);
-		if(!file.exists())
-		{
-			throw new FileNotFoundException("Cannot find file : "+file.getAbsolutePath());
+		if(!file.exists()) {
+			throw new FileNotFoundException("Cannot find file : " + file.getAbsolutePath());
 		}
 		File[] farray=file.listFiles();
 		String path;
 		
-		if(farray!=null)
-		{
-			for(File f:farray)
-			{
+		if(farray!=null) {
+			for(File f:farray) {
 				path=f.getPath();
-				if(path.endsWith(extention))
-				{
+				if(path.endsWith(extention)) {
 					list.add(path);
 				}
 			}
@@ -65,8 +59,7 @@ public class Upload
 	
 	public static String uploadfile(String url, String automationkey, String filepath, String format, String automationHierarchy, 
 			String testsuitekey, String testsuiteName, String platform, String cycle, String project, String release, String build,
-			String testsuiteFields, String testcaseFields, Log log) throws IOException,ParseException
-	{
+			String testsuiteFields, String testcaseFields, String skipWarning, Log log) throws IOException,ParseException {
 		String res;
 		
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -101,23 +94,22 @@ public class Upload
 		
 		if(testsuiteFields!=null && !testsuiteFields.isEmpty())
 			builder.addTextBody("testsuite_fields", testsuiteFields, ContentType.TEXT_PLAIN);
+
+		if(skipWarning != null && !skipWarning.isEmpty())
+			builder.addTextBody("skipWarning", skipWarning, ContentType.TEXT_PLAIN);
 			
 		File f = new File(filepath);
-		builder.addPart("file", new FileBody(f));
-		
+		builder.addPart("file", new FileBody(f));		
 			
 		HttpEntity multipart = builder.build();
 		uploadFile.setEntity(multipart);
 		CloseableHttpResponse response = httpClient.execute(uploadFile);
 		int code=response.getStatusLine().getStatusCode();
-		if(code!=200)
-		{
-			log.info("----------Status Code:"+code+"----------");
-			if(code==400)
-			{
+		if (code != 200) {
+			log.info("----------Status Code:" + code + "----------");
+			if (code == 400) {
 				HttpEntity entity = response.getEntity();
-				if(entity!=null)
-				{
+				if (entity != null) {
 					InputStream content = entity.getContent();
 					StringBuilder  builder1 = new StringBuilder();
 					Reader read = new InputStreamReader(content, StandardCharsets.UTF_8);
@@ -127,23 +119,17 @@ public class Upload
 						while ((line = reader.readLine()) != null) {
 							builder1.append(line);
 						}
-
-					}
-					finally{
+					} finally {
 						reader.close();
 						content.close();
 					}
 					log.info("Error Response-->"+builder1.toString());
-				}
-				
+				}				
 			}
 			return "false";
-		}
-		else
-		{
+		} else {
 			HttpEntity entity = response.getEntity();
-			if(entity!=null)
-			{
+			if (entity != null) {
 				InputStream content = entity.getContent();
 				StringBuilder  builder1 = new StringBuilder();
 				Reader read = new InputStreamReader(content, StandardCharsets.UTF_8);
@@ -153,9 +139,7 @@ public class Upload
 					while ((line = reader.readLine()) != null) {
 						builder1.append(line);
 					}
-
-				}
-				finally{
+				} finally {
 					reader.close();
 					content.close();
 				}
@@ -164,6 +148,7 @@ public class Upload
 				return responsejson.toString().replace("\\/","/");
 			}
 		}
+
 		
 		res=EntityUtils.toString(response.getEntity());
 		httpClient.close();

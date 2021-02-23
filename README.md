@@ -50,6 +50,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 		<platform>Demo Platform</platform>
 		<testcaseFields>{"description":"Automated Test case","testCaseType":"Security","testCaseState":"Rejected","component":["x"],"priority":"Blocker","testcaseOwner":"Jack","estimatedTime":"143","userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testcaseFields>
 		<testsuiteFields>{"description":"Automated Test suite","testsuiteOwner":"Jack","testSuiteState":"New","userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testsuiteFields>
+		<skipWarning>0<skipWarning> <!-- Pass: 0/1 -->
 	</configuration>
 </plugin>
 ```
@@ -57,7 +58,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * **url (required)** - URL of your QMetry instance
 * **apikey (required)** - Automation API Key
 * **filepath (required)** - path to result file (or directory for multiple files) relative to build directory
-* **format (required)** - junit/xml or testng/xml or cucucmber/json or qas/json or hpuft/xml
+* **format (required)** - junit/xml or testng/xml or cucucmber/json or qas/json or hpuft/xml or robot/xml
 * **project or qtmProject (required)** - Project ID or Project Key or Project name
 * **automationHierarchy (optional)** - Hierarchy which will be used to parse test result files on QTM for JUnit and TestNG (In case of other frameworks automationHierarchy will be skipped if provided)
   * JUnit 
@@ -76,6 +77,8 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * **platform (optional)** - Platform Id or Platform Name
 * **testcaseFields (optional)** - Mention system defined fields and user defined fields for test case as shown in Test Case JSON format above.
 * **testsuiteFields (optional)** - Mention system defined fields and user defined fields for test suite as shown in Test Suite JSON format above.
+* **skipWarning (optional)** - 0 Test Case Import will be failed if the result file contains test case summary with more than 255 characters., 1 Test Cases can be imported by ignoring the warning about summary length. If the test case summary is longer, it will be truncated to 255 characters.
+
 
 #### Important Points
 * Project name, key or id can be provided in 'project' or 'qtmProject' parameter, if both are provided then 'project' will be ignored.

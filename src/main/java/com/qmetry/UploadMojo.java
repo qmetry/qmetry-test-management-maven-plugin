@@ -22,33 +22,24 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.FileNotFoundException;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.simple.parser.ParseException;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 /**
  * Goal=uploadresults:Upload test results on Qmetry Test Management.
  *
  */
 @Mojo( name = "uploadresults", defaultPhase = LifecyclePhase.TEST )
-public class UploadMojo
-    extends AbstractMojo
-{
+public class UploadMojo extends AbstractMojo {
     /**
      * QTM Base Url.
      */
-    @Parameter( property = "url", required = true )
+    @Parameter( property = "url", required = true)
     String url;
 	
 	/**
@@ -65,7 +56,7 @@ public class UploadMojo
 	
 	/**
 	 *Format of test result file.
-	 * Valid Format junit/xml , cucumber/json , testng/xml , qas/json , hpuft/xml
+	 * Valid Format junit/xml, cucumber/json, testng/xml, qas/json, hpuft/xml, robot/xml
 	 */
 	@Parameter( property = "format", required = true)
 	String format;
@@ -137,37 +128,28 @@ public class UploadMojo
 	 */
 	@Parameter(property="testsuiteFields", required=false)
 	String testsuiteFields;
+
+	@Parameter(property="skipWarning", required=false)
+	String skipWarning;
 	
-    public void execute()
-        throws MojoExecutionException
-    {
+    public void execute() throws MojoExecutionException {
 		String projectId;
 		
-		try
-		{
-			if(qtmProject!=null && !qtmProject.isEmpty())
-			{
+		try {
+			if (qtmProject!=null && !qtmProject.isEmpty()) {
 				projectId = qtmProject;
-			}
-			else if(project!=null && !project.isEmpty())
-			{
+			} else if (project!=null && !project.isEmpty()) {
 				projectId = project;
-			}
-			else
-			{
+			} else {
 				throw new MojoExecutionException("Please provide Project name, key or id in 'project' or 'qtmProject' parameter");
 			}
-			if(cycle!=null && !cycle.isEmpty())
-			{
-				if(!(release!=null && !release.isEmpty()))
-				{
+			if(cycle!=null && !cycle.isEmpty()) {
+				if(!(release!=null && !release.isEmpty())) {
 					throw new MojoExecutionException("Release is Required when Cycle is provided.\n");
 				}
 			}
-			if(build!=null && !build.isEmpty())
-			{
-				if(!(release!=null && !release.isEmpty()) || !(cycle!=null && !cycle.isEmpty()))
-				{
+			if(build!=null && !build.isEmpty()) {
+				if(!(release!=null && !release.isEmpty()) || !(cycle!=null && !cycle.isEmpty())) {
 					throw new MojoExecutionException("Release and Cycle are required when Build is provided\n");
 				}
 			}
@@ -176,7 +158,7 @@ public class UploadMojo
 				try {
 					JSONParser parse = new JSONParser();
 					parse.parse(testcaseFields);
-				}catch (Exception e) {
+				} catch (Exception e) {
 					throw new MojoExecutionException("Provide valid json for Testcase fields\n");
 				}
 			}
@@ -185,8 +167,14 @@ public class UploadMojo
 				try {
 					JSONParser parse = new JSONParser();
 					parse.parse(testsuiteFields);
-				}catch (Exception e) {
+				} catch (Exception e) {
 					throw new MojoExecutionException("Provide valid json for Testsuite fields\n");
+				}
+			}
+
+			if (skipWarning !=null && !skipWarning.isEmpty()) {
+				if ( !(skipWarning.equals("0") || skipWarning.equals("1"))) {
+					throw new MojoExecutionException("Skip warning must be 0 or 1.\n");
 				}
 			}
 			
@@ -198,51 +186,46 @@ public class UploadMojo
 			if(format.equals("cucumber/json")) {
 				
 				fileformat="CUCUMBER";
-				if(automationHierarchy!=null && !automationHierarchy.isEmpty())
-				{
-					getLog().info("Skipping automationHierarchy becuase it is not supported for framework: " + format);
+				if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
+					getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
 				}
 			} else if(format.equals("junit/xml")) {
 				
 				fileformat="JUNIT";
-				if(automationHierarchy!=null && !automationHierarchy.isEmpty())
-				{
-					if(automationHierarchy.equals("1") || automationHierarchy.equals("2") || automationHierarchy.equals("3"))
-					{
+				if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
+					if(automationHierarchy.equals("1") || automationHierarchy.equals("2") || automationHierarchy.equals("3")) {
 						autoHierarchy = automationHierarchy;
-					}
-					else
-					{
+					} else {
 						throw new MojoExecutionException("Please provide valid automationHierarchy value for framework: " + format);
 					}
 				}
 			} else if(format.equals("testng/xml")) {
 				
 				fileformat="TESTNG";
-				if(automationHierarchy!=null && !automationHierarchy.isEmpty())
-				{
-					if(automationHierarchy.equals("1") || automationHierarchy.equals("2") || automationHierarchy.equals("3"))
-					{
+				if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
+					if(automationHierarchy.equals("1") || automationHierarchy.equals("2") || automationHierarchy.equals("3")) {
 						autoHierarchy = automationHierarchy;
-					}
-					else
-					{
+					} else {
 						throw new MojoExecutionException("Please provide valid automationHierarchy value for framework: " + format);
 					}
 				}
 			} else if(format.equals("qas/json")) {
 				
 				fileformat="QAS";
-				if(automationHierarchy!=null && !automationHierarchy.isEmpty())
-				{
-					getLog().info("Skipping automationHierarchy becuase it is not supported for framework: " + format);
+				if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
+					getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
 				}
 			} else if(format.equals("hpuft/xml")) {
 				
 				fileformat="HPUFT";
-				if(automationHierarchy!=null && !automationHierarchy.isEmpty())
-				{
-					getLog().info("Skipping automationHierarchy becuase it is not supported for framework: " + format);
+				if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
+					getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
+				}
+			} else if(format.equals("robot/xml")) {
+				
+				fileformat="ROBOT";
+				if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
+					getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
 				}
 			}
 			
@@ -279,6 +262,9 @@ public class UploadMojo
 			if (testcaseFields != null && !testcaseFields.isEmpty()) {
 				getLog().info("Testcase Fields: " + testcaseFields);
 			}
+			if (skipWarning != null && !skipWarning.isEmpty()) {
+				getLog().info("Skip Warning: " + skipWarning);
+			}
 			
 			if(format.equals("qas/json")) {
 				
@@ -287,7 +273,7 @@ public class UploadMojo
 					throw new FileNotFoundException("Can't find file specified : "+sourceDir.getAbsolutePath());
 				}
 				
-				getLog().info("Creating Zip file..........");
+				getLog().info("Creating Zip file........");
 				if(sourceDir.isFile()) {
 					//getLog().info("In qas/json enter path to directory not file.");
 					throw new MojoExecutionException("In qas/json enter path to directory not file.\n");
@@ -296,43 +282,41 @@ public class UploadMojo
 				String zipfilepath=CreateZip.createZip(absolutefilepath,format);
 				getLog().info("Created Zip File:"+zipfilepath);
 				getLog().info("Uploading Test Results..........");
-				String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, getLog());
+				String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, skipWarning, getLog());
 				
 				if(response.equals("false")) {
-					throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
+					throw new MojoExecutionException("Couldn't upload testcase. Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 				} else {
 					getLog().info("Test results uploaded successfully");
 					getLog().info("Response-->"+response);
 				}
 			} else if(filepath.endsWith("*.xml") || filepath.endsWith("*.json")) {
 				
-				if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml")) {
+				if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml") || format.equals("robot/xml")) {
 					if(filepath.endsWith("*.json")) {
-						throw new MojoExecutionException("Can not upload json files when format is "+format);
+						throw new MojoExecutionException("Can not upload json files when format is " + format);
 					}
 				} else if(format.equals("cucumber/json") && filepath.endsWith("*.xml")) {
-					throw new MojoExecutionException("Can not upload xml files when format is "+format);
+					throw new MojoExecutionException("Can not upload xml files when format is " + format);
 				}
 				
-				String response=null;
-				File f=new File(absolutefilepath);
-				File file1=f.getParentFile();
-				if(!file1.exists())
-				{
+				String response = null;
+				File f = new File(absolutefilepath);
+				File file1 = f.getParentFile();
+				if (!file1.exists()) {
 					throw new FileNotFoundException("Can't find file specified : "+file1.getAbsolutePath());
 				}
-				String parentDir=file1.getPath();
-				List<String> filelist=Upload.fetchFiles(parentDir,format);
-				if(filelist!=null) {
-					for(String file:filelist)
-					{
+				String parentDir = file1.getPath();
+				List<String> filelist = Upload.fetchFiles(parentDir,format);
+				if(filelist != null) {
+					for(String file : filelist) {
 						//upload test results
 						getLog().info("Uploading Test Results..........");
 						getLog().info("File:"+file);
-						response=Upload.uploadfile(url,apikey,file,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, getLog());
-						if(response.equals("false")) {
+						response = Upload.uploadfile(url,apikey,file,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, skipWarning, getLog());
+						if (response.equals("false")) {
 							//getLog().info("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information");
-							throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
+							throw new MojoExecutionException("Couldn't upload testcase. Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 						} else {
 							getLog().info("Testcase uploaded successfully");
 							getLog().info("Response-->"+response);
@@ -345,27 +329,24 @@ public class UploadMojo
 				
 				File f=new File(absolutefilepath);
 				if(!f.exists()) {
-					throw new FileNotFoundException("Can't find file specified : "+f.getAbsolutePath());
+					throw new FileNotFoundException("Can't find file specified : " + f.getAbsolutePath());
 				}
 				
 				if(f.isDirectory()) {
-					getLog().info("Creating Zip file..........");
+					getLog().info("Creating Zip file............");
 					String zipfilepath=CreateZip.createZip(absolutefilepath,format);
 					getLog().info("Created Zip File:"+zipfilepath);
 					getLog().info("Uploading Test Results..........");
-					String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, getLog());
-					if(response.equals("false"))
-					{
+					String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, skipWarning, getLog());
+					if(response.equals("false")) {
 						throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
-					}
-					else
-					{
+					} else {
 						getLog().info("Test results uploaded successfully");
 						getLog().info("Response-->"+response);
 					}
 				} else {
 					
-					if(absolutefilepath.endsWith(".xml") && !(fileformat.equals("HPUFT") || fileformat.equals("JUNIT") || fileformat.equals("TESTNG"))) {
+					if (absolutefilepath.endsWith(".xml") && !(fileformat.equals("HPUFT") || fileformat.equals("JUNIT") || fileformat.equals("TESTNG") || fileformat.equals("ROBOT"))) {
 						throw new MojoExecutionException("Cannot upload xml files when format is " + format + "\nPlease send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 					} else if(absolutefilepath.endsWith(".json") && !fileformat.equals("CUCUMBER")) {
 						throw new MojoExecutionException("Cannot upload json files when format is " + format + "\nPlease send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
@@ -373,13 +354,13 @@ public class UploadMojo
 					
 					//upload test results
 					getLog().info("Uploading Test Results..........");
-					String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, getLog());
+					String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, skipWarning, getLog());
 					if(response.equals("false")) {
 						//getLog().info("Couldn't upload test result.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information");
 						throw new MojoExecutionException("Couldn't upload test result.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 					} else {
 						getLog().info("Testcase uploaded successfully");
-						getLog().info("Response-->"+response);
+						getLog().info("Response-->" + response);
 					}
 				}
 			}
