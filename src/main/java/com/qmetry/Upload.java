@@ -32,7 +32,7 @@ public class Upload
 		String extention;
 		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml") || format.equals("robot/xml"))
 			extention=".xml";
-		else if(format.equals("cucumber/json"))
+		else if(format.equals("cucumber/json") || format.equals("json/json"))
 			extention=".json";
 		else
 			return null;
@@ -59,7 +59,7 @@ public class Upload
 	
 	public static String uploadfile(String url, String automationkey, String filepath, String format, String automationHierarchy, 
 			String testsuitekey, String testsuiteName, String platform, String cycle, String project, String release, String build,
-			String testsuiteFields, String testcaseFields, String skipWarning, Log log) throws IOException,ParseException {
+			String testsuiteFields, String testcaseFields, Log log) throws IOException,ParseException {
 		String res;
 		
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -71,21 +71,31 @@ public class Upload
 		uploadFile.addHeader("scope","default");
 			
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		
 		builder.addTextBody("entityType",format, ContentType.TEXT_PLAIN);
+		builder.addTextBody("apiVersion","2", ContentType.TEXT_PLAIN);
+		
 		if(automationHierarchy!=null && !automationHierarchy.isEmpty())
 			builder.addTextBody("automationHierarchy", automationHierarchy, ContentType.TEXT_PLAIN);
+		
 		if(testsuitekey!=null && !testsuitekey.isEmpty())
 			builder.addTextBody("testsuiteId", testsuitekey, ContentType.TEXT_PLAIN);
+		
 		if(testsuiteName!=null && !testsuiteName.isEmpty())
 			builder.addTextBody("testsuiteName", testsuiteName, ContentType.TEXT_PLAIN);
+		
 		if(cycle!=null && !cycle.isEmpty())
 			builder.addTextBody("cycleID",cycle,ContentType.TEXT_PLAIN);
+		
 		if(platform!=null && !platform.isEmpty())
 			builder.addTextBody("platformID",platform,ContentType.TEXT_PLAIN);
+		
 		if(project!=null && !project.isEmpty())
 			builder.addTextBody("projectID",project,ContentType.TEXT_PLAIN);
+		
 		if(release!=null && !release.isEmpty())
 			builder.addTextBody("releaseID",release,ContentType.TEXT_PLAIN);
+		
 		if(build!=null && !build.isEmpty())
 			builder.addTextBody("buildID",build,ContentType.TEXT_PLAIN);
 		
@@ -94,9 +104,6 @@ public class Upload
 		
 		if(testsuiteFields!=null && !testsuiteFields.isEmpty())
 			builder.addTextBody("testsuite_fields", testsuiteFields, ContentType.TEXT_PLAIN);
-
-		if(skipWarning != null && !skipWarning.isEmpty())
-			builder.addTextBody("skipWarning", skipWarning, ContentType.TEXT_PLAIN);
 			
 		File f = new File(filepath);
 		builder.addPart("file", new FileBody(f));		
@@ -155,5 +162,4 @@ public class Upload
 		
 		return res;
 	}
-	
 }
