@@ -267,16 +267,18 @@ public class UploadMojo extends AbstractMojo {
 					throw new FileNotFoundException("Can't find file specified : "+sourceDir.getAbsolutePath());
 				}
 				
-				getLog().info("Creating Zip file........");
+				String resultFilePath = null;
+				
 				if(sourceDir.isFile()) {
-					//getLog().info("In qas/json enter path to directory not file.");
-					throw new MojoExecutionException("In qas/json enter path to directory not file.\n");
+				    resultFilePath = absolutefilepath;
+				} else if(sourceDir.isDirectory()) {
+				    getLog().info("Creating Zip file........");
+				    resultFilePath=CreateZip.createZip(absolutefilepath,format);
+				    getLog().info("Created Zip File:"+resultFilePath);
+				    getLog().info("Uploading Test Results..........");
 				}
 				
-				String zipfilepath=CreateZip.createZip(absolutefilepath,format);
-				getLog().info("Created Zip File:"+zipfilepath);
-				getLog().info("Uploading Test Results..........");
-				String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, getLog());
+				String response=Upload.uploadfile(url,apikey,resultFilePath,fileformat,autoHierarchy,testsuite,testsuiteName,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, getLog());
 				
 				if(response.equals("false")) {
 					throw new MojoExecutionException("Couldn't upload testcase. Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
