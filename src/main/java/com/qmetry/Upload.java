@@ -59,7 +59,7 @@ public class Upload
 	
 	public static String uploadfile(String url, String automationkey, String filepath, String format, String automationHierarchy, 
 			String testsuitekey, String testsuiteName, String platform, String cycle, String project, String release, String build,
-			String testsuiteFields, String testcaseFields, Log log) throws IOException,ParseException {
+			String testsuiteFields, String testcaseFields, String skipWarning, String isMatchingRequired, Log log) throws IOException,ParseException {
 		String res;
 		
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -71,9 +71,7 @@ public class Upload
 		uploadFile.addHeader("scope","default");
 			
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-		
 		builder.addTextBody("entityType",format, ContentType.TEXT_PLAIN);
-		builder.addTextBody("apiVersion","2", ContentType.TEXT_PLAIN);
 		
 		if(automationHierarchy!=null && !automationHierarchy.isEmpty())
 			builder.addTextBody("automationHierarchy", automationHierarchy, ContentType.TEXT_PLAIN);
@@ -104,6 +102,12 @@ public class Upload
 		
 		if(testsuiteFields!=null && !testsuiteFields.isEmpty())
 			builder.addTextBody("testsuite_fields", testsuiteFields, ContentType.TEXT_PLAIN);
+		
+		if(skipWarning != null && !skipWarning.isEmpty())
+			builder.addTextBody("skipWarning", skipWarning, ContentType.TEXT_PLAIN);
+		
+		if(isMatchingRequired != null && !isMatchingRequired.isEmpty())
+			builder.addTextBody("is_matching_required", isMatchingRequired, ContentType.TEXT_PLAIN);
 			
 		File f = new File(filepath);
 		builder.addPart("file", new FileBody(f));		
