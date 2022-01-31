@@ -56,7 +56,7 @@ public class UploadMojo extends AbstractMojo {
 
     /**
      *Format of test result file.
-     * Valid Format junit/xml, cucumber/json, testng/xml, qas/json, hpuft/xml, robot/xml, json/json
+     * Valid Format junit/xml, cucumber/json, testng/xml, qas/json, hpuft/xml, robot/xml
      */
     @Parameter( property = "format", required = true)
     String format;
@@ -242,14 +242,8 @@ public class UploadMojo extends AbstractMojo {
 		if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
 		    getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
 		}
-	    }  else if(format.equals("json/json")) {
-
-		fileformat="JSON";
-		if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
-		    getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
-		}
-	    }
-
+	    } 
+	    
 	    getLog().info("Format:" + format);
 	    getLog().info("File Path:" + absolutefilepath);
 
@@ -327,7 +321,7 @@ public class UploadMojo extends AbstractMojo {
 		    if(filepath.endsWith("*.json")) {
 			throw new MojoExecutionException("Can not upload json files when format is " + format);
 		    }
-		} else if((format.equals("cucumber/json") || format.equals("json/json")) && filepath.endsWith("*.xml")) {
+		} else if((format.equals("cucumber/json")) && filepath.endsWith("*.xml")) {
 		    throw new MojoExecutionException("Can not upload xml files when format is " + format);
 		}
 
@@ -378,7 +372,7 @@ public class UploadMojo extends AbstractMojo {
 
 		    if (absolutefilepath.endsWith(".xml") && !(fileformat.equals("HPUFT") || fileformat.equals("JUNIT") || fileformat.equals("TESTNG") || fileformat.equals("ROBOT"))) {
 			throw new MojoExecutionException("Cannot upload xml files when format is " + format + "\nPlease send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
-		    } else if(absolutefilepath.endsWith(".json") && !(fileformat.equals("CUCUMBER") || fileformat.equals("JSON"))) {
+		    } else if(absolutefilepath.endsWith(".json") && !(fileformat.equals("CUCUMBER"))) {
 			throw new MojoExecutionException("Cannot upload json files when format is " + format + "\nPlease send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 		    }
 

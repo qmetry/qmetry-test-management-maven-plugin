@@ -32,7 +32,7 @@ public class Upload
 		String extention;
 		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml") || format.equals("robot/xml"))
 			extention=".xml";
-		else if(format.equals("cucumber/json") || format.equals("json/json"))
+		else if(format.equals("cucumber/json"))
 			extention=".json";
 		else
 			return null;

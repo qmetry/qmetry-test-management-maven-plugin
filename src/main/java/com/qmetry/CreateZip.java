@@ -73,7 +73,7 @@ public class CreateZip
 		String extention="";
 		if(formats.equals("junit/xml") || formats.equals("testng/xml") || formats.equals("hpuft/xml") || formats.equals("robot/xml")) {
 			extention="xml";
-		} else if(formats.equals("cucumber/json") || formats.equals("qas/json") || formats.equals("json/json")) {
+		} else if(formats.equals("cucumber/json") || formats.equals("qas/json")) {
 			extention="json";
 		}
 		File dir = new File(sourceDir);
