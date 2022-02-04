@@ -58,7 +58,7 @@ public class Upload
 	}
 	
 	public static String uploadfile(String url, String automationkey, String filepath, String format, String automationHierarchy, 
-			String testsuitekey, String testsuiteName, String platform, String cycle, String project, String release, String build,
+			String testsuitekey, String testsuiteName, String tsFolderPath, String platform, String cycle, String project, String release, String build,
 			String testsuiteFields, String testcaseFields, String skipWarning, String isMatchingRequired, Log log) throws IOException,ParseException {
 		String res;
 		
@@ -81,6 +81,9 @@ public class Upload
 		
 		if(testsuiteName!=null && !testsuiteName.isEmpty())
 			builder.addTextBody("testsuiteName", testsuiteName, ContentType.TEXT_PLAIN);
+		
+		if(tsFolderPath!=null && !tsFolderPath.isEmpty())
+			builder.addTextBody("tsFolderPath", tsFolderPath, ContentType.TEXT_PLAIN);
 		
 		if(cycle!=null && !cycle.isEmpty())
 			builder.addTextBody("cycleID",cycle,ContentType.TEXT_PLAIN);

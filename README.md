@@ -44,6 +44,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 		<automationHierarchy>1</automationHierarchy>
 		<testsuite>Testsuite Key</testsuite>
 		<testsuiteName>Demo Test suite</testsuiteName>
+		<tsFolderPath>Fitness Tracker/Track1</tsFolderPath>
 		<release>Demo Release</release>
 		<cycle>Demo Cycle</cycle>
 		<build>Demo Build</build>
@@ -75,11 +76,12 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * **build (optional)** - Build ID or Build name
 * **testsuite (optional)** - Test suite ID or Entity Key (This will upload results to existing test suite)
 * **testsuiteName (optional)** - Test suite Name (This will create a new test suite with given name)
+* **tsFolderPath (optional)** - Test suite Folder Path (This will upload results to the mentioned Test Suite Folder)
 * **platform (optional)** - Platform Id or Platform Name
 * **testcaseFields (optional)** - Mention system defined fields and user defined fields for test case as shown in Test Case JSON format above
 * **testsuiteFields (optional)** - Mention system defined fields and user defined fields for test suite as shown in Test Suite JSON format above
 * **skipWarning (optional)** - 0 : (Default) Test Case Import will be failed if the result file contains test case summary with more than 255 characters, 1 : Test Cases can be imported by ignoring the warning about summary length. If the test case summary is longer, it will be truncated to 255 characters
-* **isMatchingRequired (optional)** - true : (Default) Create a new version of Test Case if the latest version does not match with the one being uploaded, false : Reuse already linked Test Case version on Test Suite OR auto link the existing latest version of Test Case, if the Test Case entity key OR Test Case summary is found matching
+* **isMatchingRequired (optional)** - true : (Default) Create a new Test Case or Test Case Version if no version matches with the one being uploaded, false : Reuse already linked Test Case version on Test Suite OR auto link the existing latest version of Test Case, if the Test Case entity key OR Test Case summary is found matching
 
 
 #### Important Points
@@ -91,6 +93,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * In case of QAS enter path to the folder in which testresult folder will be created. Plugin will automatically fetch testresult folder and upload results.
 * Enter directory path to upload zip file plugin will create zip file and upload it to QMetry Test Management.
 * testsuiteFields parameter will be ignored if existing Test suite Id is used to upload results.
+* tsFolderPath parameter will be ignored if the QMetry instance type is Server.
 
 ### Step 4:Generate Test Result(s) for your project.
 
