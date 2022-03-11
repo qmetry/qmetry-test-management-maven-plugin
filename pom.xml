@@ -104,7 +104,8 @@
                 <message>Maven artifacts for ${project.version}</message>  
                 <noJekyll>true</noJekyll>                                  
                 <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> 
-                <branch>refs/heads/mvn-repo</branch>                       
+                <branch>refs/heads/mvn-repo</branch>
+		<merge>true</merge>
                 <includes><include>**/*</include></includes>
                 <repositoryName>qmetry-test-management-maven-plugin</repositoryName>      
                 <repositoryOwner>qmetry</repositoryOwner>    
