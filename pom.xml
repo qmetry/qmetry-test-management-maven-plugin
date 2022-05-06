@@ -4,7 +4,7 @@
 
   <groupId>com.qmetry</groupId>
   <artifactId>qmetry-test-management-maven-plugin</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
   <packaging>maven-plugin</packaging>
 
   <name>Maven Integration - QMetry Test Management</name>
@@ -105,7 +105,7 @@
                 <noJekyll>true</noJekyll>                                  
                 <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> 
                 <branch>refs/heads/mvn-repo</branch>
-		<merge>true</merge>
+				        <merge>true</merge>
                 <includes><include>**/*</include></includes>
                 <repositoryName>qmetry-test-management-maven-plugin</repositoryName>      
                 <repositoryOwner>qmetry</repositoryOwner>    
