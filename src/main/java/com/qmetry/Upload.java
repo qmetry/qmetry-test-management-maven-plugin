@@ -203,8 +203,7 @@ public class Upload {
 			//Calling RequestAgain method
 			RequestAgain(log, automationkey, url, responsejson, httpClient);
 			//Exit after successful build
-//			exit(0);
-
+			//exit(0);
 		}
 		if (statusObj.get("status").toString().equals("Completed")) {
 				return statusObj.toString().replace("\\/", "/");
@@ -238,6 +237,5 @@ public class Upload {
 				break;
 			}
 		}
-
 	}
 }
