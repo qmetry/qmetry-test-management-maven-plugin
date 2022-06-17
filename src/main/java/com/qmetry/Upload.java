@@ -198,14 +198,17 @@ public class Upload {
 			return getRequeststatus(log, automationkey, url, responsejson, httpClient);
 		}
 		//If status is in Queue call API for 10 mins
-		if(statusObj.get("status").toString().equals("In Queue")){
-			log.info("Response-->"+statusObj.toString().replace("\\/", "/"));
+		if (statusObj.get("status").toString().equals("In Queue")) {
+			log.info("Response-->" + statusObj.toString().replace("\\/", "/"));
 			//Calling RequestAgain method
 			RequestAgain(log, automationkey, url, responsejson, httpClient);
 			//Exit after successful build
-			exit(0);
+//			exit(0);
 		}
-		return statusObj.toString().replace("\\/", "/");
+		if (statusObj.get("status").toString().equals("Completed")) {
+			return statusObj.toString().replace("\\/", "/");
+		}
+		return "";
 	}
 
 	//Request called when Status is in queue
