@@ -218,7 +218,7 @@ public class Upload {
 		long start = System.currentTimeMillis(); //start time
 		long end = start + 10 * 60 * 1000; // 10 mins (60*1000 = 1 min | 1*10 = 10 mins)
 
-		//Loop to start timer
+		//Loop to start timer ( Run from current time to next 10 mins in future)
 		while (System.currentTimeMillis() < end) {
 			//Executing API
 			CloseableHttpResponse statusResponse = httpClient.execute(getStatus);
