@@ -204,9 +204,10 @@ public class Upload {
 			RequestAgain(log, automationkey, url, responsejson, httpClient);
 			//Exit after successful build
 //			exit(0);
+
 		}
 		if (statusObj.get("status").toString().equals("Completed")) {
-			return statusObj.toString().replace("\\/", "/");
+				return statusObj.toString().replace("\\/", "/");
 		}
 		return "";
 	}
