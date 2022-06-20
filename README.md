@@ -1,4 +1,5 @@
-# qmetry-test-management-maven-plugin
+# Maven Plugin
+## qmetry-test-management-maven-plugin
 QMetry Test Management plugin for Maven has been designed to seamlessly integrate your CI/CD pipeline with QMetry Test Management.
 
 QMetry Test Management Maven Plugin uploads result file(s) generated in a Maven project to QMetry Test Management. The plugin, if used in a maven project, provides an additional maven goal 'uploadresults'
