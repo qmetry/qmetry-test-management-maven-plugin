@@ -220,16 +220,16 @@ public class Upload {
 		//Timer function for all API 10 mins
 		long start = System.currentTimeMillis(); //start time
 		long end = start + 10 * 60 * 1000; // 10 mins (60*1000 = 1 min | 1*10 = 10 mins)
-
+		boolean flag = false;
 		//Loop to start timer ( Run from current time to next 10 mins in future)
 		while (System.currentTimeMillis() < end) {
 			//Executing API
 			CloseableHttpResponse statusResponse = httpClient.execute(getStatus);
 			//Get status Object
 			JSONObject statusObj = getResponseObject(statusResponse.getEntity(), log);
-			if(statusObj.get("status").toString().equals("In Progress")) {
+			if(statusObj.get("status").toString().equals("In Progress")&& flag==false) {
 				log.info("Response-->" + statusObj.toString().replace("\\/", "/"));
-				continue;
+				flag = true;
 			}
 			//Stop loop if status is Completed or Failed and exit
 			if (statusObj.get("status").toString().equals("Completed") || statusObj.get("status").toString().equals("Failed")) {
