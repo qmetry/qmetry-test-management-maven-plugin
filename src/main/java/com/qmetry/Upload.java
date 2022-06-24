@@ -208,7 +208,9 @@ public class Upload {
 		if (statusObj.get("status").toString().equals("Completed")) {
 				return statusObj.toString().replace("\\/", "/");
 		}
-		return "";
+		else{
+			return "";
+		}
 	}
 
 	//Request called when Status is in queue
