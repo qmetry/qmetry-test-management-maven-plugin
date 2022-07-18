@@ -227,7 +227,7 @@ public class Upload {
 		while (System.currentTimeMillis() < end) {
 			//Executing API
 			CloseableHttpResponse statusResponse = httpClient.execute(getStatus);
-			//Get status Object
+			//Get status Object - Return Response
 			JSONObject statusObj = getResponseObject(statusResponse.getEntity(), log);
 			if(statusObj.get("status").toString().equals("In Progress")&& flag==false) {
 				log.info("Response-->" + statusObj.toString().replace("\\/", "/"));
