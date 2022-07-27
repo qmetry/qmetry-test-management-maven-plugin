@@ -194,31 +194,32 @@ public class Upload {
 			log.info("Status Code : " + status);
 			return responsejson.toString().replace("\\/", "/");
 		}
-		if (statusObj.get("status").toString().equals("In Progress")) {
-			return getRequeststatus(log, automationkey, url, responsejson, httpClient);
-		}
+
 		//If status is in Queue call API for 10 mins
-		if (statusObj.get("status").toString().equals("In Queue")) {
+		else if (statusObj.get("status").toString().equals("In Queue")) {
 			log.info("Response-->" + statusObj.toString().replace("\\/", "/"));
 			//Calling RequestAgain method
-			RequestAgain(log, automationkey, url, responsejson, httpClient);
-			//Exit after successful build
-			//exit(0);
+			return RequestAgain(log, automationkey, url, responsejson, httpClient);
 		}
-		if (statusObj.get("status").toString().equals("Completed")) {
-				return statusObj.toString().replace("\\/", "/");
+		else if (statusObj.get("status").toString().equals("In Progress")) {
+			return getRequeststatus(log, automationkey, url, responsejson, httpClient);
+		}
+		else if (statusObj.get("status").toString().equals("Completed")) {
+			return statusObj.toString().replace("\\/", "/");
 		}
 		else{
-			return "";
+			return statusObj.toString().replace("\\/", "/");
 		}
 	}
 
 	//Request called when Status is in queue
-	public static void RequestAgain(Log log, String automationkey, String url, JSONObject responsejson, CloseableHttpClient httpClient) throws IOException {
+	public static String RequestAgain(Log log, String automationkey, String url, JSONObject responsejson, CloseableHttpClient httpClient) throws IOException {
 		//Http Get API call
 		HttpGet getStatus = new HttpGet(url + "/rest/admin/status/automation/" + responsejson.get("requestId"));
 		getStatus.addHeader("apiKey", automationkey);
 		getStatus.addHeader("scope", "default");
+
+		String out = null;
 		//Timer function for all API 10 mins
 		long start = System.currentTimeMillis(); //start time
 		long end = start + 10 * 60 * 1000; // 10 mins (60*1000 = 1 min | 1*10 = 10 mins)
@@ -230,14 +231,15 @@ public class Upload {
 			//Get status Object - Return Response
 			JSONObject statusObj = getResponseObject(statusResponse.getEntity(), log);
 			if(statusObj.get("status").toString().equals("In Progress")&& flag==false) {
-				log.info("Response-->" + statusObj.toString().replace("\\/", "/"));
+				out  = "Response-->" + statusObj.toString().replace("\\/", "/");
 				flag = true;
 			}
 			//Stop loop if status is Completed or Failed and exit
 			if (statusObj.get("status").toString().equals("Completed") || statusObj.get("status").toString().equals("Failed")) {
-				log.info("Response-->" + statusObj.toString().replace("\\/", "/"));
+				out = "Response-->" + statusObj.toString().replace("\\/", "/");
 				break;
 			}
 		}
+		return out;
 	}
 }
