@@ -45,6 +45,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 		<testsuite>Testsuite Key</testsuite>
 		<testsuiteName>Demo Test suite</testsuiteName>
 		<tsFolderPath>Fitness Tracker/Track1</tsFolderPath>
+		<tcFolderPath>Fitness Tracker/Track1</tcFolderPath>
 		<release>Demo Release</release>
 		<cycle>Demo Cycle</cycle>
 		<build>Demo Build</build>
