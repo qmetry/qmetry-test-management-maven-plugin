@@ -84,6 +84,12 @@ public class UploadMojo extends AbstractMojo {
     @Parameter(property="tsFolderPath",required=false)
     String tsFolderPath;
 
+	/**
+	 *Testcase Folder Path
+	 */
+	@Parameter(property="tcFolderPath",required=false)
+	String tcFolderPath;
+
     /**
      *Platform name
      */
@@ -134,6 +140,9 @@ public class UploadMojo extends AbstractMojo {
      */
     @Parameter(property="testsuiteFields", required=false)
     String testsuiteFields;
+
+	@Parameter(property="testExecutionUdfFields", required=false)
+	String testExecutionUdfFields;
     
     /**
      *Skip warning if summary length is more than 255 characters
@@ -186,6 +195,16 @@ public class UploadMojo extends AbstractMojo {
 		    throw new MojoExecutionException("Provide valid json for Testsuite fields\n");
 		}
 	    }
+
+		if(testExecutionUdfFields !=null && !testExecutionUdfFields.isEmpty()) {
+			try {
+				JSONParser parse = new JSONParser();
+				parse.parse(testExecutionUdfFields);
+				getLog().info("testExecutionUdfFields");
+			} catch (Exception e) {
+				throw new MojoExecutionException("Provide valid json for Testsuite fields\n");
+			}
+		}
 	    
 	    if (skipWarning !=null && !skipWarning.isEmpty()) {
 		if ( !(skipWarning.equals("0") || skipWarning.equals("1"))) {
@@ -277,6 +296,9 @@ public class UploadMojo extends AbstractMojo {
 	    if (tsFolderPath != null && !tsFolderPath.isEmpty()) {
 		getLog().info("Testsuite Folder Path:" + tsFolderPath);
 	    }
+		if (tcFolderPath != null && !tcFolderPath.isEmpty()) {
+			getLog().info("Testcase Folder Path:" + tcFolderPath);
+		}
 	    if (platform != null && !platform.isEmpty()) {
 		getLog().info("Platform:" + platform);
 	    }
@@ -286,6 +308,9 @@ public class UploadMojo extends AbstractMojo {
 	    if (testcaseFields != null && !testcaseFields.isEmpty()) {
 		getLog().info("Testcase Fields: " + testcaseFields);
 	    }
+		if (testExecutionUdfFields != null && !testExecutionUdfFields.isEmpty()) {
+			getLog().info("TestExecution User Defined Fields: " + testExecutionUdfFields);
+		}
 	    if (skipWarning != null && !skipWarning.isEmpty()) {
 		getLog().info("Skip Warning: " + skipWarning);
 	    }
@@ -316,7 +341,7 @@ public class UploadMojo extends AbstractMojo {
 		    getLog().info("Uploading Test Results..........");
 		}
 
-		String response=Upload.uploadfile(url,apikey,resultFilePath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, skipWarning, isMatchingRequired, getLog());
+		String response=Upload.uploadfile(url,apikey,resultFilePath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testExecutionUdfFields, skipWarning, isMatchingRequired, getLog());
 
 		if(response.equals("false")) {
 		    throw new MojoExecutionException("Couldn't upload testcase. Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
@@ -347,7 +372,7 @@ public class UploadMojo extends AbstractMojo {
 			//upload test results
 			getLog().info("Uploading Test Results..........");
 			getLog().info("File:"+file);
-			response = Upload.uploadfile(url,apikey,file,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, skipWarning, isMatchingRequired, getLog());
+			response = Upload.uploadfile(url,apikey,file,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields,testExecutionUdfFields, skipWarning, isMatchingRequired, getLog());
 			if (response.equals("false")) {
 			    throw new MojoExecutionException("Couldn't upload testcase. Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 			} else {
@@ -370,7 +395,7 @@ public class UploadMojo extends AbstractMojo {
 		    String zipfilepath=CreateZip.createZip(absolutefilepath,format);
 		    getLog().info("Created Zip File:"+zipfilepath);
 		    getLog().info("Uploading Test Results..........");
-		    String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, skipWarning, isMatchingRequired, getLog());
+		    String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testExecutionUdfFields, skipWarning, isMatchingRequired, getLog());
 		    if(response.equals("false")) {
 			throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 		    } else {
@@ -387,7 +412,7 @@ public class UploadMojo extends AbstractMojo {
 
 		    //upload test results
 		    getLog().info("Uploading Test Results..........");
-		    String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, skipWarning, isMatchingRequired, getLog());
+		    String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testExecutionUdfFields,skipWarning, isMatchingRequired, getLog());
 		    if(response.equals("false")) {
 			throw new MojoExecutionException("Couldn't upload test result.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 		    } else {
