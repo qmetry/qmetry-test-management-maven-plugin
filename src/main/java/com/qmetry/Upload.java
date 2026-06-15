@@ -58,7 +58,7 @@ public class Upload {
 	
 	public static String uploadfile(String url, String automationkey, String filepath, String format, String automationHierarchy, 
 			String testsuitekey, String testsuiteName, String tsFolderPath, String tcFolderPath, String platform, String cycle, String project, String release, String build,
-			String testsuiteFields, String testcaseFields, String testExecutionUdfFields, String skipWarning, String isMatchingRequired, Log log) throws IOException,ParseException {
+			String testsuiteFields, String testcaseFields, String testRunFields, String skipWarning, String isMatchingRequired, Log log) throws IOException,ParseException {
 		String res;
 
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -108,8 +108,8 @@ public class Upload {
 		if (testsuiteFields != null && !testsuiteFields.isEmpty())
 			builder.addTextBody("testsuite_fields", testsuiteFields, ContentType.TEXT_PLAIN);
 
-		if(testExecutionUdfFields!=null && !testExecutionUdfFields.isEmpty())
-			builder.addTextBody("testexecutionudf_fields", testExecutionUdfFields, ContentType.TEXT_PLAIN);
+		if(testRunFields!=null && !testRunFields.isEmpty())
+			builder.addTextBody("testexecutionudf_fields", testRunFields, ContentType.TEXT_PLAIN);
 		
 		if(skipWarning != null && !skipWarning.isEmpty())
 			builder.addTextBody("skipWarning", skipWarning, ContentType.TEXT_PLAIN);

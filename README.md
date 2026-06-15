@@ -53,7 +53,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 		<platform>Demo Platform</platform>
 		<testcaseFields>{"description":"Automated Test case","testCaseType":"Security","testCaseState":"Rejected","component":["x"],"priority":"Blocker","testcaseOwner":"Jack","estimatedTime":"143","userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testcaseFields>
 		<testsuiteFields>{"description":"Automated Test suite","testsuiteOwner":"Jack","testSuiteState":"New","userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testsuiteFields>
-		<testExecutionUdfFields>{"userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testExecutionUdfFields>
+		<testRunFields>{"userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testRunFields>
 		<skipWarning>0</skipWarning> <!-- Pass: 0/1 -->
 		<isMatchingRequired>true</isMatchingRequired> <!-- Pass: true/false -->
 	</configuration>
@@ -84,7 +84,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 * **platform (optional)** - Platform Id or Platform Name
 * **testcaseFields (optional)** - Mention system defined fields and user defined fields for test case as shown in Test Case JSON format above
 * **testsuiteFields (optional)** - Mention system defined fields and user defined fields for test suite as shown in Test Suite JSON format above
-* **testExecutionUdfFields (optional)** - Mention user defined fields for test execution as shown in Test Execution JSON format above
+* **testRunFields (optional)** - Mention user defined fields for test run as shown in Test Run JSON format above
 * **skipWarning (optional)** - 0 : (Default) Test Case Import will be failed if the result file contains test case summary with more than 255 characters, 1 : Test Cases can be imported by ignoring the warning about summary length. If the test case summary is longer, it will be truncated to 255 characters
 * **isMatchingRequired (optional)** - true : (Default) Create a new Test Case or Test Case Version if no version matches with the one being uploaded, false : Reuse already linked Test Case version on Test Suite OR auto link the existing latest version of Test Case, if the Test Case entity key OR Test Case summary is found matching
 
