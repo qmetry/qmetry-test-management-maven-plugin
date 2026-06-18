@@ -53,7 +53,7 @@ Open the pom.xml and add the configurations as described on the Automation API s
 		<platform>Demo Platform</platform>
 		<testcaseFields>{"description":"Automated Test case","testCaseType":"Security","testCaseState":"Rejected","component":["x"],"priority":"Blocker","testcaseOwner":"Jack","estimatedTime":"143","userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testcaseFields>
 		<testsuiteFields>{"description":"Automated Test suite","testsuiteOwner":"Jack","testSuiteState":"New","userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testsuiteFields>
-		<testRunFields>{"userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testRunFields>
+		<testRunFields>{"userDefinedFields":{"Integrate":"Custom Field Testsuite"}}</testRunFields> <!-- Supports UDFs only-->
 		<skipWarning>0</skipWarning> <!-- Pass: 0/1 -->
 		<isMatchingRequired>true</isMatchingRequired> <!-- Pass: true/false -->
 	</configuration>

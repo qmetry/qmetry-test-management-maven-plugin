@@ -4,7 +4,7 @@
 
   <groupId>com.qmetry</groupId>
   <artifactId>qmetry-test-management-maven-plugin</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
   <packaging>maven-plugin</packaging>
 
   <name>Maven Integration - QMetry Test Management</name>
@@ -118,14 +118,6 @@
                 <phase>deploy</phase>
               </execution>
             </executions>
-        </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>7</source>
-                <target>7</target>
-            </configuration>
         </plugin>
     </plugins>
   </build>
