@@ -71,7 +71,7 @@ public class CreateZip
 	
 	public static void zipDirectory(String sourceDir, String zipfile, String formats) throws IOException {
 		String extention="";
-		if(formats.equals("junit/xml") || formats.equals("testng/xml") || formats.equals("hpuft/xml") || formats.equals("robot/xml")) {
+		if(formats.equals("junit/xml") || formats.equals("testng/xml") || formats.equals("hpuft/xml") || formats.equals("robot/xml") || formats.equalsIgnoreCase("Custom Template")) {
 			extention="xml";
 		} else if(formats.equals("cucumber/json") || formats.equals("qas/json")) {
 			extention="json";

@@ -58,7 +58,7 @@ public class Upload {
 		return null;
 	}
 	
-	public static String uploadfile(String url, String automationkey, String filepath, String format, String automationHierarchy, 
+	public static String uploadfile(String url, String automationkey, String filepath, String format, String automationHierarchy, String customTemplateName,
 			String testsuitekey, String testsuiteName, String tsFolderPath, String tcFolderPath, String platform, String cycle, String project, String release, String build,
 			String testsuiteFields, String testcaseFields, String testRunFields, String skipWarning, String isMatchingRequired, Log log) throws Exception {
 		String res;
@@ -76,6 +76,9 @@ public class Upload {
 
 		if (automationHierarchy != null && !automationHierarchy.isEmpty())
 			builder.addTextBody("automationHierarchy", automationHierarchy, ContentType.TEXT_PLAIN);
+
+		if (customTemplateName != null && !customTemplateName.isEmpty())
+			builder.addTextBody("customTemplateName", customTemplateName, ContentType.TEXT_PLAIN);
 
 		if (testsuitekey != null && !testsuitekey.isEmpty())
 			builder.addTextBody("testsuiteId", testsuitekey, ContentType.TEXT_PLAIN);
