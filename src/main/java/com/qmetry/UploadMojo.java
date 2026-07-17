@@ -66,6 +66,12 @@ public class UploadMojo extends AbstractMojo {
      */
     @Parameter( property = "automationHierarchy", required = false)
     String automationHierarchy;
+
+	/**
+	 *Custom Template Name which will be used to select custom template from QTM at run time.
+	 */
+	@Parameter( property = "customTemplateName", required = false)
+	String customTemplateName;
     /**
      *Target TestSuite Key or Id
      */
@@ -172,6 +178,13 @@ public class UploadMojo extends AbstractMojo {
 		    throw new MojoExecutionException("Release is Required when Cycle is provided.\n");
 		}
 	    }
+		if(format!=null && !format.isEmpty() && format.equals("XMLCUSTOM"))
+		{
+			if(customTemplateName.isEmpty())
+			{
+				throw new MojoExecutionException("Custom Template Name is required when Format is XMLCUSTOM");
+			}
+		}
 	    if(build!=null && !build.isEmpty()) {
 		if(!(release!=null && !release.isEmpty()) || !(cycle!=null && !cycle.isEmpty())) {
 		    throw new MojoExecutionException("Release and Cycle are required when Build is provided\n");
@@ -267,7 +280,12 @@ public class UploadMojo extends AbstractMojo {
 		if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
 		    getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
 		}
-	    } 
+	    } else if(format.equals("XMLCUSTOM")) {
+			fileformat="XMLCUSTOM";
+			if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
+				getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
+			}
+		}
 	    
 	    getLog().info("Format:" + format);
 	    getLog().info("File Path:" + absolutefilepath);
@@ -275,6 +293,9 @@ public class UploadMojo extends AbstractMojo {
 	    if (autoHierarchy != null && !autoHierarchy.isEmpty()) {
 		getLog().info("Automation Hierarchy:" + autoHierarchy);
 	    }
+		if (customTemplateName != null && !customTemplateName.isEmpty()) {
+			getLog().info("Custom Template :" + customTemplateName);
+		}
 	    if (projectId != null && !projectId.isEmpty()) {
 		getLog().info("ProjectId:" + projectId);
 	    }
@@ -341,7 +362,7 @@ public class UploadMojo extends AbstractMojo {
 		    getLog().info("Uploading Test Results..........");
 		}
 
-		String response=Upload.uploadfile(url,apikey,resultFilePath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testRunFields, skipWarning, isMatchingRequired, getLog());
+		String response=Upload.uploadfile(url,apikey,resultFilePath,fileformat,autoHierarchy,customTemplateName,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testRunFields, skipWarning, isMatchingRequired, getLog());
 
 		if(response.equals("false")) {
 		    throw new MojoExecutionException("Couldn't upload testcase. Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
@@ -351,7 +372,7 @@ public class UploadMojo extends AbstractMojo {
 		}
 	    } else if(filepath.endsWith("*.xml") || filepath.endsWith("*.json")) {
 
-		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml") || format.equals("robot/xml")) {
+		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml") || format.equals("robot/xml") || format.equals("XMLCUSTOM")) {
 		    if(filepath.endsWith("*.json")) {
 			throw new MojoExecutionException("Can not upload json files when format is " + format);
 		    }
@@ -372,7 +393,7 @@ public class UploadMojo extends AbstractMojo {
 			//upload test results
 			getLog().info("Uploading Test Results..........");
 			getLog().info("File:"+file);
-			response = Upload.uploadfile(url,apikey,file,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields,testRunFields, skipWarning, isMatchingRequired, getLog());
+			response = Upload.uploadfile(url,apikey,file,fileformat,autoHierarchy,customTemplateName,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields,testRunFields, skipWarning, isMatchingRequired, getLog());
 			if (response.equals("false")) {
 			    throw new MojoExecutionException("Couldn't upload testcase. Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 			} else {
@@ -395,7 +416,7 @@ public class UploadMojo extends AbstractMojo {
 		    String zipfilepath=CreateZip.createZip(absolutefilepath,format);
 		    getLog().info("Created Zip File:"+zipfilepath);
 		    getLog().info("Uploading Test Results..........");
-		    String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testRunFields, skipWarning, isMatchingRequired, getLog());
+		    String response=Upload.uploadfile(url,apikey,zipfilepath,fileformat,autoHierarchy,customTemplateName,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testRunFields, skipWarning, isMatchingRequired, getLog());
 		    if(response.equals("false")) {
 			throw new MojoExecutionException("Couldn't upload testcase.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 		    } else {
@@ -404,7 +425,7 @@ public class UploadMojo extends AbstractMojo {
 		    }
 		} else {
 
-		    if (absolutefilepath.endsWith(".xml") && !(fileformat.equals("HPUFT") || fileformat.equals("JUNIT") || fileformat.equals("TESTNG") || fileformat.equals("ROBOT"))) {
+		    if (absolutefilepath.endsWith(".xml") && !(fileformat.equals("HPUFT") || fileformat.equals("JUNIT") || fileformat.equals("TESTNG") || fileformat.equals("ROBOT") || fileformat.equals("XMLCUSTOM"))) {
 			throw new MojoExecutionException("Cannot upload xml files when format is " + format + "\nPlease send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 		    } else if(absolutefilepath.endsWith(".json") && !(fileformat.equals("CUCUMBER"))) {
 			throw new MojoExecutionException("Cannot upload json files when format is " + format + "\nPlease send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
@@ -412,7 +433,7 @@ public class UploadMojo extends AbstractMojo {
 
 		    //upload test results
 		    getLog().info("Uploading Test Results..........");
-		    String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,autoHierarchy,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testRunFields,skipWarning, isMatchingRequired, getLog());
+		    String response=Upload.uploadfile(url,apikey,absolutefilepath,fileformat,autoHierarchy,customTemplateName,testsuite,testsuiteName,tsFolderPath,tcFolderPath,platform,cycle,projectId,release,build, testsuiteFields, testcaseFields, testRunFields,skipWarning, isMatchingRequired, getLog());
 		    if(response.equals("false")) {
 			throw new MojoExecutionException("Couldn't upload test result.Please send these logs to qtmprofessional@qmetrysupport.atlassian.net for more information\n");
 		    } else {
