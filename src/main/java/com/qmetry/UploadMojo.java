@@ -178,11 +178,11 @@ public class UploadMojo extends AbstractMojo {
 		    throw new MojoExecutionException("Release is Required when Cycle is provided.\n");
 		}
 	    }
-		if(format!=null && !format.isEmpty() && format.equalsIgnoreCase("Custom Template"))
+		if(format!=null && !format.isEmpty() && format.equals("XMLCUSTOM"))
 		{
 			if(customTemplateName.isEmpty())
 			{
-				throw new MojoExecutionException("Custom Template Name is required when Format is Custom Template");
+				throw new MojoExecutionException("Custom Template Name is required when Format is XMLCUSTOM");
 			}
 		}
 	    if(build!=null && !build.isEmpty()) {
@@ -280,7 +280,7 @@ public class UploadMojo extends AbstractMojo {
 		if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
 		    getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
 		}
-	    } else if(format.equalsIgnoreCase("Custom Template")) {
+	    } else if(format.equals("XMLCUSTOM")) {
 			fileformat="XMLCUSTOM";
 			if(automationHierarchy!=null && !automationHierarchy.isEmpty()) {
 				getLog().info("Skipping automationHierarchy because it is not supported for framework: " + format);
@@ -372,7 +372,7 @@ public class UploadMojo extends AbstractMojo {
 		}
 	    } else if(filepath.endsWith("*.xml") || filepath.endsWith("*.json")) {
 
-		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml") || format.equals("robot/xml") || format.equalsIgnoreCase("Custom Template")) {
+		if(format.equals("junit/xml") || format.equals("testng/xml") || format.equals("hpuft/xml") || format.equals("robot/xml") || format.equals("XMLCUSTOM")) {
 		    if(filepath.endsWith("*.json")) {
 			throw new MojoExecutionException("Can not upload json files when format is " + format);
 		    }
